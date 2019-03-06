@@ -9,6 +9,7 @@
     <arg name="record_images" default="true"/>
     <arg name="bag_name" default="test"/>
 
+    <rosparam file="$(find reef_estimator)/params/dodo_camera.yaml" />
     <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
         <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
         <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
@@ -40,9 +41,9 @@
         <rosparam command="load" file="$(find position_to_velocity)/params/basic.yaml" />
     </node>
 
-    <group if="$(arg record_bag">
-        <node unless="$(arg record_images)" name="record" pkg="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned"/>
-        <node if="$(arg record_images)" name="record" pkg="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/rgb/input_image camera/rgb/camera_info camera/depth_registered/input_image"/>
+    <group if="$(arg record_bag)">
+        <node unless="$(arg record_images)" name="record" pkg="rosbag"  args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned"/>
+        <node if="$(arg record_images)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/rgb/input_image camera/rgb/camera_info camera/depth_registered/input_image"/>
 
     </group>
 
