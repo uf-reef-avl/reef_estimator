@@ -1,0 +1,84 @@
+<launch>
+    <remap from="pose_stamped"		to="mocap_ned"/>
+    <!--<arg name="bag_name" default="test"/> &lt;!&ndash; required parameter - name of the bag file that will be recorded &ndash;&gt;-->
+    <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
+        <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
+        <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
+        <rosparam subst_value="true">
+            <!--enable_rgbd: true-->
+            <!--enable_sonar: false-->
+            <!--enable_mocap_xy: false-->
+            <!--enable_mocap_z: true-->
+            <!--enable_mocap_switch: true-->
+            <!--mocap_override_channel: 4-->
+            <!--debug_mode: true-->
+
+            enable_rgbd: false
+            enable_sonar: false
+            enable_mocap_xy: true
+            enable_mocap_z: true
+            enable_mocap_switch: true
+            mocap_override_channel: 4
+            debug_mode: true
+        </rosparam>
+    </node>
+
+    <!--<node name="delta_to_velocity" pkg="delta_to_velocity" type="delta_to_velocity" output="screen">-->
+        <!--<rosparam subst_value="true">-->
+            <!--&lt;!&ndash;Sigma multipier hits the std dev used by the estimator. 10 WORKS&ndash;&gt;-->
+            <!--&lt;!&ndash;sigma_multiplier : 20.0&ndash;&gt;-->
+            <!--&lt;!&ndash;Multiplier&ndash;&gt;-->
+            <!--&lt;!&ndash;This was used to overwrite the R comming from the delta to velocity node&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_x : .3&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_y : .3&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_z : .3&ndash;&gt;-->
+            <!--&lt;!&ndash;&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_x : .05&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_y : .05&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_z : .05&ndash;&gt;-->
+            <!--&lt;!&ndash;&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_x : .1&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_y : .1&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_z : .1&ndash;&gt;-->
+
+            <!--&lt;!&ndash;Base for dynamic&ndash;&gt;-->
+            <!--multiplier_x : 2.8-->
+            <!--multiplier_y : 2.8-->
+            <!--multiplier_z : 2.8-->
+
+            <!--&lt;!&ndash;2x&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_x : 5.6&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_y : 5.6&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_z : 5.6&ndash;&gt;-->
+            <!--&lt;!&ndash;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;3x&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_x : 10&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_y : 10&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_z : 10&ndash;&gt;-->
+            <!--&lt;!&ndash;&ndash;&gt;-->
+
+            <!--&lt;!&ndash;Experiments to tune S = 2.8 as base value&ndash;&gt;-->
+            <!--&lt;!&ndash;The tunning experiments consisted on increments of 20 percent.&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_x : 5.04&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_y : 5.04&ndash;&gt;-->
+            <!--&lt;!&ndash;multiplier_z : 5.04&ndash;&gt;-->
+
+        <!--</rosparam>-->
+    <!--</node>-->
+
+    <node name="mocap_to_velocity" pkg="mocap_to_velocity" type="mocap_position_to_velocity" output="screen">
+        <!--<remap from="mocap_ned"		to="pose_stamped"/>-->
+        <!-- loads the basic parameters -->
+        <!--<rosparam command="load" file="$(find mocap_to_velocity)/params/basic_param.yaml" />-->
+        <!--<rosparam command="load" file="$(find mocap_to_velocity)/params/camera_to_body.yaml" />-->
+    </node>
+    <!--MAC-->
+    <!--<node pkg="rosbag" type="play" name="player" output="screen" args="&#45;&#45;clock -s 10 -r 20 /media/humberto/HD/data/mike/clean.bag"/>-->
+    <!--LASR-->
+    <!--<node pkg="rosbag" type="play" name="player" output="screen" args="&#45;&#45;clock /media/humberto/HD/data/20190207_001_bag_filtered.bag"/>-->
+    <!--&lt;!&ndash;<node pkg="rosbag" type="play" name="player" output="screen" args="&#45;&#45;clock -s 10 -r 20 /media/humberto/HD/data/pras_bag_filtered.bag"/>&ndash;&gt;-->
+    <!--<node name="record" pkg="rosbag" type="record" args="-o /home/humberto/PycharmProjects/RGBDplots/Dyn /xyz_debug_estimate /sync_rgbd_velocity_body_frame  /sync_mocap_velocity_body_frame /mocap_velocity/body_level_frame" output="screen"/>-->
+    <!--<node name="record" pkg="rosbag" type="record" args="-o /home/humberto/GoogleDrive/RGBDplots/dynamic /xyz_debug_estimate /sync_rgbd_velocity_body_frame /sync_mocap_velocity_body_frame /mocap_velocity/body_level_frame " output="screen"/>-->
+    <!--<node name="record" pkg="rosbag" type="record" args="-o /home/humberto/bags /xyz_debug_estimate" output="screen"/>-->
+</launch>

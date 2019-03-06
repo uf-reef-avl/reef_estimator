@@ -1,0 +1,12 @@
+enable_rgbd: true
+enable_sonar: true
+enable_mocap_xy: false
+enable_mocap_z: false
+debug_mode: true
+enable_partial_update: true
+enable_mocap_switch: false
+mahalanobis_d_sonar: 5
+mahalanobis_d_rgbd_velocity: 5
+mahalanobis_d_mocap_z: 20
+mahalanobis_d_mocap_velocity: 20
+mocap_override_channel: 4

@@ -1,0 +1,49 @@
+<launch>
+
+    <arg name="run_estimator" default="true"/>
+    <arg name="use_rgbd" default="true"/>
+    <arg name="run_uncc" default="false"/>
+    <arg name="use_xtion" default="true"/>
+    <arg name="vehicle" default="dodo"/>
+    <arg name="record_bag" default="true"/>
+    <arg name="record_images" default="true"/>
+    <arg name="bag_name" default="test"/>
+
+    <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
+        <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
+        <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
+        <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
+        <remap from="mocap_ned" to="pose_stamped"/>
+        <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
+        <remap from="rgbd_velocity_body_frame" to="rgbd_velocity/body_level_frame"/>
+    </node>
+
+    <group if="$(arg use_rgbd)">
+
+        <node name="odom_to_velocity" pkg="odom_to_velocity" type="odom_to_velocity_node" output="screen">
+            <rosparam command="load" file="$(find odom_to_velocity)/params/basic.yaml" />
+        </node>
+
+        <group if="$(arg run_uncc)">
+            <include if="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/rgbd_odometry.launch)"/>
+            <include unless="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch)"/>
+        </group>
+
+    </group>
+
+    <node pkg="ros_vrpn_client" name="$(arg vehicle)" type="ros_vrpn_client" args="_vrpn_server_ip:=192.168.1.104" required="true" output="screen">
+        <remap from="$(arg vehicle)/ned/pose_stamped" to="pose_stamped"/>
+    </node>
+
+
+    <node name="pose_to_vel" pkg="position_to_velocity" type="position_to_velocity_node" output="screen" >
+        <rosparam command="load" file="$(find position_to_velocity)/params/basic.yaml" />
+    </node>
+
+    <group if="$(arg record_bag">
+        <node unless="$(arg record_images)" name="record" pkg="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned"/>
+        <node if="$(arg record_images)" name="record" pkg="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/rgb/input_image camera/rgb/camera_info camera/depth_registered/input_image"/>
+
+    </group>
+
+</launch>

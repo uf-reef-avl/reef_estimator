@@ -1,0 +1,17 @@
+# linux backup files
+*~
+#Dot files
+*.
+#Workspace files
+workspace.xml
+#Video files
+*.MTS
+*.avi
+\cmake-build-debug
+
+cmake-build-debug/
+.idea/
+
+
+launch/backupxy_estimator (copy).launch
+src/Old_XY
