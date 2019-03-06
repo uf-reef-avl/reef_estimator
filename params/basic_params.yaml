@@ -1,7 +1,7 @@
 enable_rgbd: true
 enable_sonar: true
-enable_mocap_xy: false
-enable_mocap_z: false
+enable_mocap_xy: true
+enable_mocap_z: true
 debug_mode: true
 enable_partial_update: true
 enable_mocap_switch: false

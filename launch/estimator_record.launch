@@ -26,8 +26,8 @@
         </node>
 
         <group if="$(arg run_uncc)">
-            <include if="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/rgbd_odometry.launch)"/>
-            <include unless="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch)"/>
+            <include if="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/rgbd_odometry.launch"/>
+            <include unless="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch"/>
         </group>
 
     </group>
