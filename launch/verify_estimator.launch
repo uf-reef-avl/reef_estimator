@@ -11,7 +11,7 @@
     <rosparam command="load" file="$(find reef_estimator)/params/dodo_camera.yaml" />
 
     <group if="$(arg play_bag)">
-        <arg name="bag_path" default="/home/prashant/Documents/Verify_Estimates/20190306_001_bag_filtered.bag"/>
+        <arg name="bag_path" default="/home/prashant/Documents/Verify_Estimates/20190306_002_bag_filtered.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
@@ -35,7 +35,7 @@
             enable_partial_update: true
             enable_mocap_switch: false
             mahalanobis_d_sonar: 20
-            mahalanobis_d_rgbd_velocity: 20
+            mahalanobis_d_rgbd_velocity: 80
             mahalanobis_d_mocap_z: 20
             mahalanobis_d_mocap_velocity: 20
         </rosparam>

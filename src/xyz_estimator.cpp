@@ -59,8 +59,12 @@ namespace reef_estimator
         private_nh_.param<double>("mahalanobis_d_mocap_velocity", mahalanobis_distance_mocap_xy_, 20);
         private_nh_.param<bool>("enable_partial_update", enable_partial_update, true);
 
-        // Initialize dt
+        ROS_WARN_STREAM("Mahalanobis Distance for Sonar " << mahalanobis_distance_sonar);
+        ROS_WARN_STREAM("Mahalanobis Distance for RGBD Velocity " << mahalanobis_distance_rgbd_xy_);
+        ROS_WARN_STREAM("Mahalanobis Distance for Mocap Z " << mahalanobis_distance_mocap_z);
+        ROS_WARN_STREAM("Mahalanobis Distance for Mocap Velocity "  << mahalanobis_distance_mocap_xy_);
 
+        // Initialize dt
         private_nh_.param<double>("estimator_dt", dt, 0.002);
         xyEst.dt = zEst.dt = dt;
 
