@@ -4,10 +4,11 @@
     <arg name="run_estimator" default="true"/>
     <arg name="use_rgbd" default="true"/>
     <arg name="run_uncc" default="true"/>
-    <arg name="use_xtion" default="false"/>
     <arg name="run_mocap_vel" default="false"/>
     <arg name="play_bag" default="true"/>
     <arg name="run_plot_juggler" default="true"/>
+
+    <rosparam command="load" file="$(find reef_estimator)/params/dodo_camera.yaml" />
 
     <group if="$(arg play_bag)">
         <arg name="bag_path" default="/home/prashant/Documents/Verify_Estimates/20190306_001_bag_filtered.bag"/>
@@ -15,9 +16,11 @@
     </group>
 
     <group if="$(arg run_plot_juggler)">
-        <arg name="layout_path" default="/home/prashant/Documents/Verify_Estimates/sync_estimates_layout.xml"/>
-        <node name="plotjuggler_with_layout" pkg="plotjuggler" type="PlotJuggler"
-            args="--layout $(arg layout_path)"/>
+        <arg name="load_measurement_layout" default="true"/>
+
+        <arg unless="$(arg load_measurement_layout)" name="layout_path" default="/home/prashant/Documents/Verify_Estimates/sync_estimates_layout.xml"/>
+        <arg if="$(arg load_measurement_layout)" name="layout_path" default="/home/prashant/Documents/Verify_Estimates/sync_estimates_measurements_layout.xml"/>
+        <node name="plotjuggler_with_layout" pkg="plotjuggler" type="PlotJuggler" args="--layout $(arg layout_path)"/>
     </group>
 
     <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
@@ -47,10 +50,7 @@
             <rosparam command="load" file="$(find odom_to_velocity)/params/basic.yaml" />
         </node>
 
-        <group if="$(arg run_uncc)">
-            <include if="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/rgbd_odometry.launch"/>
-            <include unless="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch"/>
-        </group>
+        <include if="$(arg run_uncc)" file="$(find uncc_rgbd_odom)/launch/odom_only.launch"/>
 
     </group>
 
@@ -64,6 +64,7 @@
         SD_Multiplied: 3
         Z_offset: 0.22
     </rosparam>
+
     <node name="verify_estimates" pkg="reef_estimator" type="verify_estimates.py" output="screen">
         <remap from="mocap/velocity/body_level_frame" to="velocity/body_level_frame"/>
         <remap from="xyz_debug_estimates" to="xyz_debug_estimate"/>
