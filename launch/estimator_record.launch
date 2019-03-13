@@ -46,7 +46,7 @@
     </node>
 
     <group if="$(arg record_bag)">
-        <node unless="$(arg record_images)" name="record" pkg="rosbag"  args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/odom_w_cov"/>
+        <node unless="$(arg record_images)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/odom_w_cov"/>
         <node if="$(arg record_images)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/odom_w_cov camera/rgb/input_image camera/rgb/camera_info camera/depth_registered/input_image"/>
 
     </group>
