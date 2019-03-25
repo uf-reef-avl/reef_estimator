@@ -168,7 +168,7 @@ A few examples of launch files are given in the launch directory. If you happen 
 
 **Internal Message Types**
 
-REEF Estimator uses 6 custom message types to store state estimates of interest and filter debugging information:
+The REEF Estimator uses 6 custom message types to store state estimates of interest and filter debugging information:
 
  - **XYEstimate**
 	 - **x_dot**: x velocity estimate (float64)
@@ -247,6 +247,6 @@ It publishes the following topics:
 - estimate_error           [reef_msg/SyncEstimateError  ]
 
 
-With this information, if produces the error and associated covariance which helps in testing if the filter is statistically consistent. 
+With this information, it produces the error and associated covariance which helps in testing if the filter is statistically consistent. 
 
 There is also more documentation with regards to the estimator design and dynamic equations in the [/docs/](./docs) directory.
