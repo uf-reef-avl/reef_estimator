@@ -36,7 +36,7 @@ Use the following guides to install the ROS Kinetic environment and the ROSFligh
  - [ROSFlight](http://docs.rosflight.org/en/latest/user-guide/ros-setup/)
  - [REEF_msgs](http://192.168.1.101/AVL-Summer-18/reef_msgs)
  
- ### Dependencies 
+### Dependencies 
  
  ```html
 roscpp
