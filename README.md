@@ -1,7 +1,7 @@
 # REEF Estimator
 The REEF Estimator package contains a set of simple, easy to implement, ROS-based estimators designed to supplement high-level UAV control and navigation. This includes an X/Y velocity estimator and a Z velocity and altitude estimator. For details on the theory behind the estimator design, please see the included [documentation](./docs/Estimator_Theory.pdf).
 
-## Table of Content
+## Table of Contents
 1. [ROSFlight Integration](#rosflight-Integration)
 2. [Sensors](#sensors)
 3. [Code Structure](#code-structure)
@@ -12,14 +12,14 @@ The REEF Estimator package contains a set of simple, easy to implement, ROS-base
 
 
 ## ROSFlight Integration
-REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, although it can be modified to work with any flight controller that provides real-time attitude estimates and control. The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB. An overview of this implementation is shown below:
+The REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, although it can be modified to work with any flight controller that provides real-time attitude estimates and control. The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while the REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB. An overview of this implementation is shown below:
 
 ![REEF Estimator Overview](./docs/img/REEF Estimator ONLY.png "Structure")
 
 ## Sensors
-The X/Y velocity estimator fuses attitude estimates and sensor data from the ROSFlight IMU and an RGBD camera such as the [Astra Pro](https://orbbec3d.com/product-astra-pro/). If an RGBD camera is unavailable, motion capture data can be substituted using the mocap_to_velocity package (see Installation).
+The X/Y velocity estimator combinds attitude estimates, sensor data from the ROSFlight IMU, and an RGBD camera such as the [Astra Pro](https://orbbec3d.com/product-astra-pro/). If an RGBD camera is unavailable, motion capture data can be substituted using the mocap_to_velocity package (see Installation).
 
-The Z velocity and altitude estimator fuses ROSFlight attitude estimates and sensor data with sonic altimeter ([MaxBotix MB1242](https://www.maxbotix.com/Ultrasonic_Sensors/MB1242.htm)) measurements, which can also be substituted with motion capture data.
+The Z velocity and altitude estimator combinds ROSFlight attitude estimates and sensor data from sonic altimeter ([MaxBotix MB1242](https://www.maxbotix.com/Ultrasonic_Sensors/MB1242.htm)) measurements, which can also be substituted with motion capture data.
 
 ## Code Structure
 REEF Estimator is built upon the **Estimator** class, which implements a standard Kalman filter with propagate() and update() member functions which operate on the **xHat** and **z** vectors as well as the **F**, **B**, **G**, **H**, **P**, **Q**, **R**, and **K** matrices (see [https://en.wikipedia.org/wiki/Kalman_filter](https://en.wikipedia.org/wiki/Kalman_filter)). The partialUpdate() member function is also included (see [Partial Update Paper](./docs/Partial_Update.pdf)). The **XYEstimator** and **ZEstimator** classes extend the **Estimator** class and tailor it to their respective use cases by setting vector and matrix dimensions in their constructors. **XYEstimator** also implements a nonlinearPropagation() function for extended Kalman filter (EKF) functionality. The **XYZEstimator** class instantiates **XYEstimator** and **ZEstimator** objects and handles data flow, outlier rejection, and propagation/update events. Finally, the **SensorManager** class instantiates an **XYZEstimator** object and handles high-level sensor and motion capture callbacks.
