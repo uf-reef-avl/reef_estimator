@@ -4,9 +4,7 @@ The REEF Estimator package contains a set of simple, easy to implement, ROS-base
 ## ROSFlight Integration
 REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, although it can be modified to work with any flight controller that provides real-time attitude estimates and control. The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB. An overview of this implementation is shown below:
 
-![REEF Estimator Overview](./docs/img/overview.png "Overview")
-
-REEF Estimator interfaces with ROSFlight by receiving attitude estimates and sending attitude and thrust commands over the USB interface. It also includes an optional RC interface that allows the user to toggle motion capture feedback in place of onboard sensors using the RC transmitter.
+![REEF Estimator Overview](./docs/img/REEF Estimator ONLY.png "Structure")
 
 ## Sensors
 The X/Y velocity estimator fuses attitude estimates and sensor data from the ROSFlight IMU and an RGBD camera such as the [Astra Pro](https://orbbec3d.com/product-astra-pro/). If an RGBD camera is unavailable, motion capture data can be substituted using the mocap_to_velocity package (see Installation).
@@ -26,16 +24,28 @@ Use the following guides to install the ROS Kinetic environment and the ROSFligh
 
  - [ROS Kinetic](http://wiki.ros.org/kinetic/Installation)
  - [ROSFlight](http://docs.rosflight.org/en/latest/user-guide/ros-setup/)
+ - [REEF_msgs](http://192.168.1.101/AVL-Summer-18/reef_msgs)
+ 
+ ### Dependencies 
+ 
+ ```html
+roscpp
+rospy
+geometry_msgs
+rosflight
+rosflight_msgs
+sensor_msgs
+std_msgs
+tf2_eigen
+tf_conversions
+reef_msgs
+```
  
 ### Installation
-REEF Estimator utilizes the **uncc_rgbd_odom**, **delta_to_velocity** (for RGBD camera) and **mocap_to_velocity** (for motion capture) packages for differentiating real-time pose (or delta pose) measurements into velocity estimates. In your catkin workspace **src** directory, clone the reef_estimator and supporting packages, then compile them to make sure everything builds correctly:
 
 ```
 cd catkin_ws/src
 git clone http://192.168.1.101/AVL-Summer-18/reef_estimator
-git clone http://192.168.1.101/AVL-Summer-18/uncc_rgbd_odom
-git clone http://192.168.1.101/AVL-Summer-18/delta_to_velocity
-git clone http://192.168.1.101/AVL-Summer-18/mocap_to_velocity
 cd ../ && catkin_make
 ```
    
@@ -141,96 +151,8 @@ A characteristic **reef_estimator** launchfile node declaration is included for 
 	</rosparam>
 </node>
 ```
-REEF Estimator also requires several supporting nodes if RGBD or motion capture velocity measurements will be included. Firstly, the **rosflight_io** node should be included:
-```xml
-<node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">
-	<param name="port" value="/dev/ttyUSB0"/>
-</node>
-```
 
-For OptiTrack motion capture systems, the **ros_vrpn_client** node should be included:
-```xml
-<node pkg="ros_vrpn_client" name="$(arg vehicle_name)" type="ros_vrpn_client" args="_vrpn_server_ip:=192.168.1.104" required="true" output="screen">
-	<remap from="$(arg vehicle_name)/ned/pose_stamped" to="mocap_ned"/>
-</node>
-```
-As shown, the vehicle geometry_msgs::PoseStamped topic name should be remapped to the name provided to the estimator via the **mocap_pose_topic** parameter. Additionally, the mocap_to_velocity node is required for motion capture velocity feedback:
-```xml
-<node pkg="mocap_to_velocity" name="mocap_to_velocity" type="mocap_to_velocity" output="screen">
-   <remap from="pose_stamped" to="mocap_ned"/>
-   <rosparam subst_value="true">
-		mocap_noise_std: 0.0
-	</rosparam>
-</node>
-```
-Again, the pose topic is remapped for consistency. The **mocap_noise_std** parameter allows noise to be added to the motion capture velocity estimates for testing filter performance. This parameter takes a **double** argument representing the standard deviation of the desired noise. For RGBD velocity feedback, the **uncc_rgbd_odom** node must be launched. This produces the delta-pose odometry estimates differentiated to obtain vehicle velocity. For Astra cameras, the following launch file should be used:
-```
-<include file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch">
-	<arg name="run_rviz" value="false"/>
-</include>
-```
-The **run_rviz** argument prevents rviz from launching mid-flight and draining CPU bandwidth. The **delta_to_velocity** node must also be included to differentiate delta-pose for the filter:
-```xml
-<node name="delta_to_velocity" pkg="delta_to_velocity" type="delta_to_velocity" output="screen">
-    <rosparam subst_value="true">
-        sigma_multiplier : 10.0
-    </rosparam>
-</node>
-```
-The **sigma_multiplier** parameter (double precision) determines the covariance prescaling applied to the odometry estimates.
-
-Complete estimator launchfile example:
-
-```xml
-<?xml version="1.0"?>
-
-<launch>
-    <arg name="use_mocap" value="true"/>
-    <arg name="vehicle_name" value="uav1"/>
-	
-    <!-- rosflight_io interface -->
-    <node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">
-        <param name="port" value="/dev/ttyUSB0"/>
-    </node>
-	
-    <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
-        <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
-        <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
-        <rosparam subst_value="true">
-            enable_rgbd: true
-            enable_sonar: true
-            enable_mocap_xy: true
-            enable_mocap_z: true
-
-            enable_mocap_switch: true
-            mocap_override_channel: 4
-
-            debug_mode: true
-        </rosparam>
-    </node>
-	
-	<!-- RGBD -->
-	<include file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch">
-		<arg name="run_rviz" value="false"/>
-	</include>
-    <node name="delta_to_velocity" pkg="delta_to_velocity" type="delta_to_velocity" output="screen">
-        <rosparam subst_value="true">
-            sigma_multiplier : 10.0
-        </rosparam>
-    </node>
-
-    <!-- Mocap -->
-    <node if="$(arg use_mocap)" pkg="ros_vrpn_client" name="$(arg vehicle_name)" type="ros_vrpn_client" args="_vrpn_server_ip:=192.168.1.104" required="true" output="screen">
-        <remap from="$(arg vehicle_name)/ned/pose_stamped" to="mocap_ned"/>
-    </node>
-    <node if="$(arg use_mocap)" pkg="mocap_to_velocity" name="mocap_to_velocity"  type="mocap_to_velocity" output="screen">
-       <remap from="pose_stamped" to="mocap_ned"/>
-       <rosparam subst_value="true">
-            mocap_noise_std: 0.0
-        </rosparam>
-    </node>
-</launch>
-```
+A few examples of launch files are given in the launch directory. If you happen to have a bag file you can use the verify_estimate.launch which will generate plots of the estimator along with the truth. For this to work you MUST have the [Plot Juggler](https://github.com/facontidavide/PlotJuggler) package.
 
 ### ROS Topics and Messages
 
