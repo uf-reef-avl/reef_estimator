@@ -26,7 +26,7 @@ class verifyEstimates():
         self.sync_msg = SyncVerifyEstimates()
         self.estimate_error = SyncEstimateError()
 
-        self.multiplier = 0
+        self.multiplier = 1
         self.sonar_offset = 0
         use_sonar = False
         self.multiplier = rospy.get_param("SD_Multiplied")
