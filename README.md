@@ -1,7 +1,7 @@
 # REEF Estimator
-The REEF Estimator package contains a set of simple, easy to implement, ROS-based estimators designed to supplement high-level UAV control and navigation. This includes an X/Y velocity estimator and a Z velocity and altitude estimator. For details on the theory behind the estimator design, please see the included [documentation](./docs/Estimator_Theory.pdf).
+The REEF Estimator package contains a set of simple, easy to implement, ROS-based estimators designed to supplement high-level UAV control and navigation.  This includes an X/Y velocity estimator and a Z velocity and altitude estimator.  For details on the theory behind the estimator design, please see the included [documentation](./docs/Estimator_Theory.pdf).
 
-## Table of Content
+## Table of Contents
 1. [ROSFlight Integration](#rosflight-Integration)
 2. [Sensors](#sensors)
 3. [Code Structure](#code-structure)
@@ -12,17 +12,17 @@ The REEF Estimator package contains a set of simple, easy to implement, ROS-base
 
 
 ## ROSFlight Integration
-REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, although it can be modified to work with any flight controller that provides real-time attitude estimates and control. The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB. An overview of this implementation is shown below:
+While the REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, it can also be modified to work with any flight controller that provides real-time attitude estimates and control.  The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while the REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB.  An overview of this implementation is shown below:
 
 ![REEF Estimator Overview](./docs/img/REEF Estimator ONLY.png "Structure")
 
 ## Sensors
-The X/Y velocity estimator fuses attitude estimates and sensor data from the ROSFlight IMU and an RGBD camera such as the [Astra Pro](https://orbbec3d.com/product-astra-pro/). If an RGBD camera is unavailable, motion capture data can be substituted using the mocap_to_velocity package (see Installation).
+The X/Y velocity estimator merges attitude estimates, sensor data from the ROSFlight IMU, and images from a RGBD camera such as the [Astra Pro](https://orbbec3d.com/product-astra-pro/) to produce velocity estimates. If a RGBD camera is unavailable, motion capture data can be substituted using the mocap_to_velocity package (see Installation).
 
-The Z velocity and altitude estimator fuses ROSFlight attitude estimates and sensor data with sonic altimeter ([MaxBotix MB1242](https://www.maxbotix.com/Ultrasonic_Sensors/MB1242.htm)) measurements, which can also be substituted with motion capture data.
+The Z velocity and altitude estimator merges ROSFlight attitude estimates and sensor data from a sonic altimeter ([MaxBotix MB1242](https://www.maxbotix.com/Ultrasonic_Sensors/MB1242.htm)), which can also be substituted with motion capture data.
 
 ## Code Structure
-REEF Estimator is built upon the **Estimator** class, which implements a standard Kalman filter with propagate() and update() member functions which operate on the **xHat** and **z** vectors as well as the **F**, **B**, **G**, **H**, **P**, **Q**, **R**, and **K** matrices (see [https://en.wikipedia.org/wiki/Kalman_filter](https://en.wikipedia.org/wiki/Kalman_filter)). The partialUpdate() member function is also included (see [Partial Update Paper](./docs/Partial_Update.pdf)). The **XYEstimator** and **ZEstimator** classes extend the **Estimator** class and tailor it to their respective use cases by setting vector and matrix dimensions in their constructors. **XYEstimator** also implements a nonlinearPropagation() function for extended Kalman filter (EKF) functionality. The **XYZEstimator** class instantiates **XYEstimator** and **ZEstimator** objects and handles data flow, outlier rejection, and propagation/update events. Finally, the **SensorManager** class instantiates an **XYZEstimator** object and handles high-level sensor and motion capture callbacks.
+The REEF Estimator is built upon the **Estimator** class, which implements a standard Kalman filter with propagate() and update() member functions which operate on the **xHat** and **z** vectors as well as the **F**, **B**, **G**, **H**, **P**, **Q**, **R**, and **K** matrices (see [https://en.wikipedia.org/wiki/Kalman_filter](https://en.wikipedia.org/wiki/Kalman_filter)). The partialUpdate() member function is also included (see [Partial Update Paper](./docs/Partial_Update.pdf)). The **XYEstimator** and **ZEstimator** classes extend the **Estimator** class and tailor it to their respective use cases by setting vector and matrix dimensions in their constructors. **XYEstimator** also implements a nonlinearPropagation() function for extended Kalman filter (EKF) functionality. The **XYZEstimator** class instantiates **XYEstimator** and **ZEstimator** objects and handles data flow, outlier rejection, and propagation/update events. Finally, the **SensorManager** class instantiates an **XYZEstimator** object and handles high-level sensor and motion capture callbacks.
 
 ![REEF Estimator Code Structure](./docs/img/structure.png "Structure")
 
@@ -60,13 +60,13 @@ cd ../ && catkin_make
 ```
    
 ### Usage
-REEF Estimator should be executed as a node using a ROS launchfile, with **reef_estimator** being the name of the node, the package, and the type. For example,
+The REEF Estimator should be executed as a node using a ROS launchfile, with **reef_estimator** being the name of the node, the package, and the type. For example,
 
 ```xml
 <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen"/>
 ```
 
-However, for it to work properly, several parameters will need to be included, namely those for the X/Y and Z filter matrices. It is recommended to separate these parameters into 2 .yaml files in the **reef_estimator/params** folder - **xy_est_params.yaml** and **z_est_params.yaml**. Examples of these files and descriptions of their parameters are included:
+However, for it to work properly, several parameters will need to be included, namely those for the X/Y and Z filter matrices. It is recommended to separate these parameters into 2 .yaml files in the **reef_estimator/params** folder: **xy_est_params.yaml** and **z_est_params.yaml**. Examples of these files and descriptions of their parameters are included:
 
 **xy_est_params.yaml**:
 ```
@@ -143,7 +143,7 @@ z_beta: [1.0, 1.0, 0.5]
 |**estimator_dt**|double|Timestep in seconds for estimator propagation (period of published IMU messages)|0.002|
 |**debug_mode**|boolean|Enables debugging mode which prints more information to the console and publishes the xyz_debug_estimate topic (see ROS Topics and Messages) containing covariance and z-minus states.|false|
 
-A characteristic **reef_estimator** launchfile node declaration is included for reference:
+A sample **reef_estimator** launchfile node declaration is included for reference:
 ```xml
 <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
 	<rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
@@ -168,7 +168,7 @@ A few examples of launch files are given in the launch directory. If you happen 
 
 **Internal Message Types**
 
-REEF Estimator uses 6 custom message types to store state estimates of interest and filter debugging information:
+The REEF Estimator uses 6 custom message types to store state estimates of interest and filter debugging information:
 
  - **XYEstimate**
 	 - **x_dot**: x velocity estimate (float64)
@@ -247,6 +247,6 @@ It publishes the following topics:
 - estimate_error           [reef_msg/SyncEstimateError  ]
 
 
-With this information, if produces the error and associated covariance which helps in testing if the filter is statistically consistent. 
+With this information, it produces the error and associated covariance which helps in testing if the filter is statistically consistent. 
 
 There is also more documentation with regards to the estimator design and dynamic equations in the [/docs/](./docs) directory.
