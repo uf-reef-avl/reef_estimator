@@ -237,10 +237,15 @@ Video demonstration of a closed-loop velocity controller using REEF Estimator fo
 
 ## Notes
 The estimator has a small python script to verify the estimates. This script subscribes to the following topics
-- XYZ_Estimates
-- Mocap truth
-- Measurements
-- Sonar NED
+- xyz_debug_estimates               [reef_msg/XYZDebugEstimate]
+- mocap/velocity/body_level_frame             [geometry_msgs/TwistWithCovarianceStamped   ]
+- rgbd_velocity/body_level_frame            [reef_msg/DeltaToVel  ]
+- pose_stamped      [geometry_msgs/PoseStamped]
+
+It publishes the following topics:
+- sync_estimates     [reef_msg/SyncVerifyEstimates  ]
+- estimate_error           [reef_msg/SyncEstimateError  ]
+
 
 With this information, if produces the error and associated covariance which helps in testing if the filter is statistically consistent. 
 
