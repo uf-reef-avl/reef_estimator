@@ -139,7 +139,7 @@ z_beta: [1.0, 1.0, 0.5]
 |**mocap_override_channel**|integer|Sets the motion capture override RC channel. If **enable_mocap_switch** is set to true, this RC channel will trigger motion capture override if the raw RC value exceeds 1500.|4|
 |**mocap_twist_topic**|string|ROS topic name containing motion capture velocity geometry_msgs::TwistWithCovarianceStamped messages for X/Y velocity feedback.|mocap_velocity/body_level_frame|
 |**mocap_pose_topic**|string|ROS topic name containing motion capture geometry_msgs::PoseStamped messages for altitude feedback.|mocap_ned|
-|**rgbd_twist_topic**|string|ROS topic name containing RGBD velocity geometry_msgs::TwistWithCovarianceStamped messages for X/Y velocity feedback|rgbd_velocity_body_frame|
+|**rgbd_twist_topic**|string|ROS topic name containing RGBD velocity reef_msgs::DeltaToVel messages for X/Y velocity feedback|rgbd_velocity_body_frame|
 |**estimator_dt**|double|Timestep in seconds for estimator propagation (period of published IMU messages)|0.002|
 |**debug_mode**|boolean|Enables debugging mode which prints more information to the console and publishes the xyz_debug_estimate topic (see ROS Topics and Messages) containing covariance and z-minus states.|false|
 
@@ -216,7 +216,7 @@ REEF Estimator uses 6 custom message types to store state estimates of interest 
 |--|--|--|
 |imu/data|sensor_msgs::Imu|ROSFlight IMU data|
 |rc_raw|rosflight_msgs::RCRaw|ROSFlight raw RC data|
-|rgbd_velocity_body_frame|geometry_msgs::TwistWithCovariance|RGBD velocity measurements|
+|rgbd_velocity_body_frame|reef_msgs::DeltaToVel|RGBD velocity measurements|
 |mocap_ned|geometry_msgs::PoseStamped|Motion capture pose measurements|
 |mocap_velocity/body_level_frame|geometry_msgs::TwistWithCovariance|Motion capture velocity measurements|
 |sonar|sensor_msgs::Range|ROSFlight sonar measurements|
