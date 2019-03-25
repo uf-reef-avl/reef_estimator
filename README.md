@@ -66,7 +66,7 @@ The REEF Estimator should be executed as a node using a ROS launchfile, with **r
 <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen"/>
 ```
 
-However, for it to work properly, several parameters will need to be included, namely those for the X/Y and Z filter matrices. It is recommended to separate these parameters into 2 .yaml files in the **reef_estimator/params** folder - **xy_est_params.yaml** and **z_est_params.yaml**. Examples of these files and descriptions of their parameters are included:
+However, for it to work properly, several parameters will need to be included, namely those for the X/Y and Z filter matrices. It is recommended to separate these parameters into 2 .yaml files in the **reef_estimator/params** folder: **xy_est_params.yaml** and **z_est_params.yaml**. Examples of these files and descriptions of their parameters are included:
 
 **xy_est_params.yaml**:
 ```
@@ -143,7 +143,7 @@ z_beta: [1.0, 1.0, 0.5]
 |**estimator_dt**|double|Timestep in seconds for estimator propagation (period of published IMU messages)|0.002|
 |**debug_mode**|boolean|Enables debugging mode which prints more information to the console and publishes the xyz_debug_estimate topic (see ROS Topics and Messages) containing covariance and z-minus states.|false|
 
-A characteristic **reef_estimator** launchfile node declaration is included for reference:
+A sample **reef_estimator** launchfile node declaration is included for reference:
 ```xml
 <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
 	<rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
