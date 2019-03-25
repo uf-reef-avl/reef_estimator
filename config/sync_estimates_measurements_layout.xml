@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root>
+ <tabbed_widget parent="main_window" name="Main Window">
+  <plotmatrix columns="1" tab_name="plot" rows="4">
+   <plot col="0" row="0">
+    <range bottom="-1.109263" right="120.064367" top="0.660709" left="70.098971"/>
+    <limitY/>
+    <curve G="0" custom_transform="" name="/estimate_error/velocityError/x" R="0" B="255"/>
+    <curve G="19" custom_transform="" name="/estimate_error/velocitySDMinus/x" R="255" B="0"/>
+    <curve G="0" custom_transform="" name="/estimate_error/velocitySDPlus/x" R="246" B="20"/>
+    <transform value=""/>
+   </plot>
+   <plot col="0" row="1">
+    <range bottom="-1.644654" right="120.064367" top="1.516960" left="70.098971"/>
+    <limitY/>
+    <curve G="61" custom_transform="" name="/estimate_error/velocityError/y" R="0" B="255"/>
+    <curve G="4" custom_transform="" name="/estimate_error/velocitySDMinus/y" R="255" B="69"/>
+    <curve G="0" custom_transform="" name="/estimate_error/velocitySDPlus/y" R="255" B="25"/>
+    <transform value=""/>
+   </plot>
+   <plot col="0" row="2">
+    <range bottom="-0.911853" right="120.064367" top="0.911853" left="70.098971"/>
+    <limitY/>
+    <curve G="0" custom_transform="" name="/estimate_error/velocityError/z" R="21" B="255"/>
+    <curve G="0" custom_transform="" name="/estimate_error/velocitySDMinus/z" R="253" B="40"/>
+    <curve G="0" custom_transform="" name="/estimate_error/velocitySDPlus/z" R="255" B="0"/>
+    <transform value=""/>
+   </plot>
+   <plot col="0" row="3">
+    <range bottom="-0.178288" right="120.064367" top="0.178288" left="70.098971"/>
+    <limitY/>
+    <curve G="0" custom_transform="" name="/estimate_error/zError" R="0" B="255"/>
+    <curve G="8" custom_transform="" name="/estimate_error/zSDMinus" R="255" B="0"/>
+    <curve G="0" custom_transform="" name="/estimate_error/zSDPlus" R="255" B="0"/>
+    <transform value=""/>
+   </plot>
+  </plotmatrix>
+  <plotmatrix columns="1" tab_name="plot" rows="4">
+   <plot col="0" row="0">
+    <range bottom="-1.489160" right="131.297023" top="2.164197" left="106.852351"/>
+    <limitY/>
+    <curve G="0" custom_transform="" name="/sync_estimates/estimatedVelocity/x" R="255" B="0"/>
+    <curve G="162" custom_transform="" name="/sync_estimates/measuredVelocity/x" R="63" B="70"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/trueVelocity/x" R="0" B="255"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/velocity_sigma_minus/x" R="0" B="0"/>
+    <curve G="5" custom_transform="" name="/sync_estimates/velocity_sigma_plus/x" R="5" B="0"/>
+    <transform value=""/>
+   </plot>
+   <plot col="0" row="1">
+    <range bottom="-4.145898" right="131.297023" top="2.784543" left="106.852351"/>
+    <limitY/>
+    <curve G="32" custom_transform="" name="/sync_estimates/estimatedVelocity/y" R="255" B="0"/>
+    <curve G="175" custom_transform="" name="/sync_estimates/measuredVelocity/y" R="83" B="72"/>
+    <curve G="46" custom_transform="" name="/sync_estimates/trueVelocity/y" R="0" B="255"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/velocity_sigma_minus/y" R="0" B="0"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/velocity_sigma_plus/y" R="0" B="0"/>
+    <transform value=""/>
+   </plot>
+   <plot col="0" row="2">
+    <range bottom="-3.236882" right="131.297023" top="3.196404" left="106.852351"/>
+    <limitY/>
+    <curve G="0" custom_transform="" name="/sync_estimates/estimatedVelocity/z" R="255" B="13"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/trueVelocity/z" R="0" B="255"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/velocity_sigma_minus/z" R="0" B="0"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/velocity_sigma_plus/z" R="0" B="0"/>
+    <transform value=""/>
+   </plot>
+   <plot col="0" row="3">
+    <range bottom="-2.152300" right="131.297023" top="0.289158" left="106.852351"/>
+    <limitY/>
+    <curve G="0" custom_transform="" name="/sync_estimates/zEstimate" R="0" B="255"/>
+    <curve G="128" custom_transform="" name="/sync_estimates/zMeasured" R="0" B="0"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/zTrue" R="255" B="64"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/z_sigma_minus" R="0" B="0"/>
+    <curve G="0" custom_transform="" name="/sync_estimates/z_sigma_plus" R="0" B="0"/>
+    <transform value=""/>
+   </plot>
+  </plotmatrix>
+  <currentPlotMatrix index="1"/>
+ </tabbed_widget>
+ <use_relative_time_offset enabled="1"/>
+ <Plugins>
+  <DataLoad_CSV>
+   <default time_axis=""/>
+  </DataLoad_CSV>
+  <DataLoad_ROS_bags>
+   <selected_topics list=""/>
+  </DataLoad_ROS_bags>
+  <ROS_Topic_Streamer>
+   <selected_topics list="/estimate_error;/sync_estimates"/>
+  </ROS_Topic_Streamer>
+  <RosoutPublisherROS/>
+  <TopicPublisherROS/>
+ </Plugins>
+</root>
+
