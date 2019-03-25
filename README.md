@@ -1,6 +1,16 @@
 # REEF Estimator
 The REEF Estimator package contains a set of simple, easy to implement, ROS-based estimators designed to supplement high-level UAV control and navigation. This includes an X/Y velocity estimator and a Z velocity and altitude estimator. For details on the theory behind the estimator design, please see the included [documentation](./docs/Estimator_Theory.pdf).
 
+## Table of Content
+1. [ROSFlight Integration](#rosflight-Integration)
+2. [Sensors](#sensors)
+3. [Code Structure](#code-structure)
+4. [Implementation](#implementation)
+5. [Usage](#usage)
+6. [Demonstration](#demonstration)
+7. [Notes](#notes)
+
+
 ## ROSFlight Integration
 REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, although it can be modified to work with any flight controller that provides real-time attitude estimates and control. The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB. An overview of this implementation is shown below:
 
@@ -224,3 +234,14 @@ REEF Estimator uses 6 custom message types to store state estimates of interest 
 Video demonstration of a closed-loop velocity controller using REEF Estimator for feedback:
 
 [![Video Demonstration](http://img.youtube.com/vi/Ep6rkRofZs4/0.jpg)](http://www.youtube.com/watch?v=Ep6rkRofZs4)
+
+## Notes
+The estimator has a small python script to verify the estimates. This script subscribes to the following topics
+- XYZ_Estimates
+- Mocap truth
+- Measurements
+- Sonar NED
+
+With this information, if produces the error and associated covariance which helps in testing if the filter is statistically consistent. 
+
+There is also more documentation with regards to the estimator design and dynamic equations in the [/docs/](./docs) directory.
