@@ -3,15 +3,16 @@
     <arg name="vehicle" default="dodo"/>
     <arg name="run_estimator" default="true"/>
     <arg name="use_rgbd" default="true"/>
-    <arg name="run_uncc" default="true"/>
+    <arg name="run_uncc" default="false"/>
     <arg name="run_mocap_vel" default="false"/>
     <arg name="play_bag" default="true"/>
     <arg name="run_plot_juggler" default="true"/>
+    <arg name="run_image_view" default="true"/>
 
-    <rosparam command="load" file="$(find reef_estimator)/params/dodo_camera.yaml" />
+    <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
     <group if="$(arg play_bag)">
-        <arg name="bag_path" default="/home/prashant/Documents/Verify_Estimates/20190320_001_bag_filtered.bag"/>
+        <arg name="bag_path" default="/home/prashant/Documents/Verify_Estimates/20190325_001_bag_filtered.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
@@ -61,12 +62,18 @@
 
     <rosparam>
         use_sonar: true
-        SD_Multiplied: 3
-        Z_offset: 0.22
+        SD_Multiplied: 1
+        Z_offset: 0.0
     </rosparam>
 
     <node name="verify_estimates" pkg="reef_estimator" type="verify_estimates.py" output="screen">
         <remap from="mocap/velocity/body_level_frame" to="velocity/body_level_frame"/>
         <remap from="xyz_debug_estimates" to="xyz_debug_estimate"/>
     </node>
+
+    <node if="$(arg run_image_view)" name="image_view" pkg="image_view" type="image_view" output="screen">
+        <remap from="image" to="camera/rgb/input_image" />
+    </node>
+
+
 </launch>

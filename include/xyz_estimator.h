@@ -69,6 +69,7 @@ namespace reef_estimator
         double mahalanobis_distance_mocap_xy_;
         double dt;
         bool enable_partial_update;
+        int sigma_mulitplier;
 
 
       //Takeoff detection variables

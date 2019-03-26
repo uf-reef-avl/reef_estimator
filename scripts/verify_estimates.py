@@ -66,7 +66,7 @@ class verifyEstimates():
 
         self.sync_msg.trueVelocity.x = mocap_vel.twist.twist.linear.x
         self.sync_msg.trueVelocity.y = mocap_vel.twist.twist.linear.y
-        self.sync_msg.trueVelocity.z = mocap_vel.twist.twist.linear.z
+        self.sync_msg.trueVelocity.z = mocap_vel.twist.twist.linear.z - self.sonar_offset
 
         self.sync_msg.measuredVelocity.x = rgbd_msg.vel.twist.twist.linear.x
         self.sync_msg.measuredVelocity.y = rgbd_msg.vel.twist.twist.linear.y
@@ -86,17 +86,17 @@ class verifyEstimates():
         estimate_error.velocityError.y = est_msg.xy_plus.y_dot - mocap_vel.twist.twist.linear.y
         estimate_error.velocityError.z = est_msg.z_plus.z_dot - mocap_vel.twist.twist.linear.z
 
-        estimate_error.velocitySDPlus.x = 3 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
-        estimate_error.velocitySDPlus.y = 3 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
-        estimate_error.velocitySDPlus.z = 3 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
+        estimate_error.velocitySDPlus.x = (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
+        estimate_error.velocitySDPlus.y = (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
+        estimate_error.velocitySDPlus.z = (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
 
-        estimate_error.velocitySDMinus.x = -3 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
-        estimate_error.velocitySDMinus.y = -3 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
-        estimate_error.velocitySDMinus.z = -3 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
+        estimate_error.velocitySDMinus.x = -1 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
+        estimate_error.velocitySDMinus.y = -1 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
+        estimate_error.velocitySDMinus.z = -1 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
 
-        estimate_error.zError = est_msg.z_plus.z - mocap_pose.pose.position.z
-        estimate_error.zSDPlus = 3 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z )
-        estimate_error.zSDMinus = -3 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z)
+        estimate_error.zError = est_msg.z_plus.z - mocap_pose.pose.position.z + self.sonar_offset
+        estimate_error.zSDPlus = 1 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z )
+        estimate_error.zSDMinus = -1 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z)
 
         self.error_pub.publish(estimate_error)
         node_id = node_id +1
@@ -144,17 +144,17 @@ class verifyEstimates():
         estimate_error.velocityError.y = est_msg.xy_plus.y_dot - mocap_vel.twist.twist.linear.y
         estimate_error.velocityError.z = est_msg.z_plus.z_dot - mocap_vel.twist.twist.linear.z
 
-        estimate_error.velocitySDPlus.x = 3 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
-        estimate_error.velocitySDPlus.y = 3 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
-        estimate_error.velocitySDPlus.z = 3 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
+        estimate_error.velocitySDPlus.x = 1 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
+        estimate_error.velocitySDPlus.y = 1 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
+        estimate_error.velocitySDPlus.z = 1 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
 
-        estimate_error.velocitySDMinus.x = -3 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
-        estimate_error.velocitySDMinus.y = -3 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
-        estimate_error.velocitySDMinus.z = -3 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
+        estimate_error.velocitySDMinus.x = -1 * (est_msg.xy_plus.sigma_plus[0] - est_msg.xy_plus.x_dot)
+        estimate_error.velocitySDMinus.y = -1 * (est_msg.xy_plus.sigma_plus[1] - est_msg.xy_plus.y_dot)
+        estimate_error.velocitySDMinus.z = -1 * (est_msg.z_plus.sigma_plus[1] - est_msg.z_plus.z_dot)
 
         estimate_error.zError = est_msg.z_plus.z - mocap_pose.pose.position.z
-        estimate_error.zSDPlus = 3 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z )
-        estimate_error.zSDMinus = -3 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z)
+        estimate_error.zSDPlus = 1 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z )
+        estimate_error.zSDMinus = -1 * (est_msg.z_plus.sigma_plus[0] - est_msg.z_plus.z)
 
         self.error_pub.publish(estimate_error)
         node_id = node_id +1
