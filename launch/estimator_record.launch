@@ -2,8 +2,8 @@
 
     <arg name="run_estimator" default="true"/>
     <arg name="use_rgbd" default="true"/>
-    <arg name="run_uncc" default="false"/>
-    <arg name="use_xtion" default="true"/>
+    <arg name="run_uncc" default="true"/>
+    <arg name="use_xtion" default="false"/>
     <arg name="vehicle" default="dodo"/>
     <arg name="record_bag" default="true"/>
     <arg name="record_images" default="true"/>
@@ -31,7 +31,7 @@
 
         <group if="$(arg run_uncc)">
             <include if="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/rgbd_odometry.launch"/>
-            <include unless="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch"/>
+            <include unless="$(arg use_xtion)" file="$(find uncc_rgbd_odom)/launch/astra_pro_rgbd.launch"/>
         </group>
 
     </group>
@@ -47,7 +47,7 @@
 
     <group if="$(arg record_bag)">
         <node unless="$(arg record_images)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/odom_w_cov"/>
-        <node if="$(arg record_images)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/odom_w_cov camera/rgb/input_image camera/rgb/camera_info camera/depth_registered/input_image camera/rgb/image_raw camera/depth/image_raw"/>
+        <node if="$(arg record_images)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) attitude attitude/euler rc_raw imu/data sonar status pose_stamped xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame velocity/body_level_frame sonar_ned camera/odom_w_cov camera/rgb/input_image camera/rgb/camera_info camera/depth_registered/input_image camera/depth/image_raw"/>
 
     </group>
 
