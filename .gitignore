@@ -1,6 +1,8 @@
 # linux backup files
 *~
 #Dot files
+*.csv
+*.pyc
 *.
 #Workspace files
 workspace.xml
