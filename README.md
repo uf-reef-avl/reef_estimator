@@ -66,7 +66,7 @@ The REEF Estimator should be executed as a node using a ROS launchfile, with **r
 <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen"/>
 ```
 
-However, for it to work properly, several parameters will need to be included, namely those for the X/Y and Z filter matrices. It is recommended to separate these parameters into 2 .yaml files in the **reef_estimator/params** folder: **xy_est_params.yaml** and **z_est_params.yaml**. Examples of these files and descriptions of their parameters are included:
+However, for it to work properly, several parameters will need to be included, namely those for the X/Y and Z filter matrices. It is recommended to separate these parameters into two .yaml files in the **reef_estimator/params** folder: **xy_est_params.yaml** and **z_est_params.yaml**. Examples of these files and descriptions of their parameters are included:
 
 **xy_est_params.yaml**:
 ```
