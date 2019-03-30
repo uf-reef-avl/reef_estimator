@@ -22,7 +22,6 @@ class verifyEstimates():
         rgbd_subs = Subscriber("rgbd_velocity/body_level_frame", DeltaToVel)
         mocap_pose_subs = Subscriber("pose_stamped", PoseStamped)
 
-
         self.sync_msg = SyncVerifyEstimates()
         self.estimate_error = SyncEstimateError()
 

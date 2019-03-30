@@ -8,6 +8,7 @@
     <arg name="play_bag" default="true"/>
     <arg name="run_plot_juggler" default="true"/>
     <arg name="run_image_view" default="true"/>
+    <arg name="run_histogram" default="false"/>
 
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
@@ -19,8 +20,8 @@
     <group if="$(arg run_plot_juggler)">
         <arg name="load_measurement_layout" default="true"/>
 
-        <arg unless="$(arg load_measurement_layout)" name="layout_path" default="/home/prashant/Documents/Verify_Estimates/sync_estimates_layout.xml"/>
-        <arg if="$(arg load_measurement_layout)" name="layout_path" default="/home/prashant/Documents/Verify_Estimates/sync_estimates_measurements_layout.xml"/>
+        <arg unless="$(arg load_measurement_layout)" name="layout_path" default="$(find reef_estimator)/config/sync_estimates_layout.xml"/>
+        <arg if="$(arg load_measurement_layout)" name="layout_path" default="$(find reef_estimator)/config/sync_estimates_measurements_layout.xml"/>
         <node name="plotjuggler_with_layout" pkg="plotjuggler" type="PlotJuggler" args="--layout $(arg layout_path)"/>
     </group>
 
@@ -71,9 +72,13 @@
         <remap from="xyz_debug_estimates" to="xyz_debug_estimate"/>
     </node>
 
+    <node if="$(arg run_histogram)" name="online_histogram" pkg="reef_estimator" type="online_histogram.py" output="screen"/>
+
+
     <node if="$(arg run_image_view)" name="image_view" pkg="image_view" type="image_view" output="screen">
         <remap from="image" to="camera/rgb/input_image" />
     </node>
+
 
 
 </launch>
