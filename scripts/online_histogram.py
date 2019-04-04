@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
 import rospy
-from geometry_msgs.msg import TwistWithCovarianceStamped
-from geometry_msgs.msg import PoseWithCovarianceStamped
 from message_filters import ApproximateTimeSynchronizer, Subscriber
-from reef_msgs.msg import DeltaToVel
+from reef_msgs.msg import SyncEstimateError
 import math
 from collections import deque
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import matplotlib.mlab as mlab
-
+import numpy as np
 #!/usr/bin/env python
 from PlotWindow import PlotWindow
 
@@ -25,7 +23,7 @@ class verifyRGBD(PlotWindow):
 
         print("Verifying RGBD")
 
-        rospy.Subscriber("velocity_error", PoseWithCovarianceStamped, self.error_cb)
+        rospy.Subscriber("estimate_error", SyncEstimateError, self.error_cb)
 
         self.window_size = 10000
         self.counter = 0
@@ -53,13 +51,13 @@ class verifyRGBD(PlotWindow):
 
     def error_cb(self, error_msg):
 
-        sd_x = error_msg.pose.covariance[0]/3
-        sd_y = error_msg.pose.covariance[7]/3
-        sd_z = error_msg.pose.covariance[14]/3
+        sd_x = error_msg.velocitySDPlus.x/3
+        sd_y = error_msg.velocitySDPlus.y/3
+        sd_z = error_msg.zSDPlus/3
 
-        std_x_error = error_msg.pose.pose.position.x/sd_x
-        std_y_error = error_msg.pose.pose.position.y/sd_y
-        std_z_error = error_msg.pose.pose.position.z/sd_z
+        std_x_error = error_msg.velocityError.x/sd_x
+        std_y_error = error_msg.velocityError.y/sd_y
+        std_z_error = error_msg.zError/sd_z
 
         if not np.isnan(std_x_error):
             self.x_deque.append(round(std_x_error,3))
@@ -129,9 +127,3 @@ if __name__ == '__main__':
         app.exec_()
     except rospy.ROSInterruptException: pass
     rospy.spin()
-
-
-
-
-
-

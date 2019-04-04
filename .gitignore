@@ -13,7 +13,7 @@ workspace.xml
 
 cmake-build-debug/
 .idea/
-bagfile/
+bagfiles/
 
 launch/backupxy_estimator (copy).launch
 src/Old_XY
