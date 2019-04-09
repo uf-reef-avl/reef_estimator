@@ -66,6 +66,7 @@ namespace reef_estimator {
 
         bool initialized_;
         bool imuCalibrated;
+        bool get_measurements;
 
         //Mocap override variables
         bool mocapSwitchOn;

@@ -3,12 +3,12 @@
 namespace reef_estimator
 {
     SensorManager::SensorManager() : private_nh_("~"), nh_(""), initialized_(false), mocapSwitchOn(false)
-    { 
+    {
         //Mocap override RC channel parameter
         bool enableMocapSwitch = false;
         private_nh_.param<bool>("enable_mocap_switch", enableMocapSwitch, false); ///< Enable switching between sensor readings midflight
         private_nh_.param<int>("mocap_override_channel", mocapOverrideChannel, 4); ///< RC Channel to enable switching
-        
+
         if (enableMocapSwitch) {
             ROS_WARN_STREAM("Mocap override RC switch enabled on channel " << mocapOverrideChannel);
             rc_subscriber_ = nh_.subscribe("rc_raw", 1, &SensorManager::rcRawCallback, this);
@@ -46,7 +46,7 @@ namespace reef_estimator
 
     SensorManager::~SensorManager(){}
 
-    void SensorManager::imuCallback(const sensor_msgs::ImuConstPtr &msg) 
+    void SensorManager::imuCallback(const sensor_msgs::ImuConstPtr &msg)
     {
         //Pass the imu message to estimator.
         xyzEst.sensorUpdate(*msg);
@@ -61,7 +61,7 @@ namespace reef_estimator
                 xyzEst.useMocapXY = true;
                 ROS_WARN("Mocap XY feedback enabled");
             }
-            
+
             if (xyzEst.enableMocapZ)
             {
                 xyzEst.useMocapZ = true;
@@ -88,20 +88,23 @@ namespace reef_estimator
         }
     }
 
-    void SensorManager::mocapPoseCallback(const geometry_msgs::PoseStampedConstPtr &msg) 
+    void SensorManager::mocapPoseCallback(const geometry_msgs::PoseStampedConstPtr &msg)
     {
         xyzEst.mocapUpdate(*msg);
     }
 
-    void SensorManager::mocapTwistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr &msg) 
+    void SensorManager::mocapTwistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr &msg)
     {
         xyzEst.mocapUpdate(*msg);
     }
 
     void SensorManager::rgbdTwistCallback(const reef_msgs::DeltaToVelConstPtr &msg)
     {
-
-        xyzEst.rgbdUpdate(*msg);
+      private_nh_.param<bool>("enable_measurements", get_measurements, true);
+        if(get_measurements)
+          xyzEst.rgbdUpdate(*msg);
+        else
+          ROS_WARN_STREAM("You stopped the measurements! Why?? ");
     }
 
 void SensorManager::altimeterCallback(const sensor_msgs::RangeConstPtr &msg)

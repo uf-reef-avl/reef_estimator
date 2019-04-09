@@ -6,8 +6,8 @@
     <arg name="run_uncc" default="true"/>
     <arg name="run_mocap_vel" default="true"/>
     <arg name="play_bag" default="true"/>
-    <arg name="run_plot_juggler" default="false"/>
-    <arg name="run_image_view" default="true"/>
+    <arg name="run_plot_juggler" default="true"/>
+    <arg name="run_image_view" default="false"/>
     <arg name="run_histogram" default="false"/>
 
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
@@ -37,9 +37,10 @@
             enable_partial_update: true
             enable_mocap_switch: false
             mahalanobis_d_sonar: 20
-            mahalanobis_d_rgbd_velocity: 40
+            mahalanobis_d_rgbd_velocity: 80
             mahalanobis_d_mocap_z: 20
             mahalanobis_d_mocap_velocity: 50
+            enable_measurements: true
         </rosparam>
         <remap from="mocap_ned" to="pose_stamped"/>
         <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
