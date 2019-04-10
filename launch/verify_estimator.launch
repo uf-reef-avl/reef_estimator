@@ -13,7 +13,7 @@
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
     <group if="$(arg play_bag)">
-        <arg name="bag_path" default="$(find reef_estimator)/bagfiles/20190326_001.bag"/>
+        <arg name="bag_path" default="$(find reef_estimator)/bagfiles/20190326_002.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
