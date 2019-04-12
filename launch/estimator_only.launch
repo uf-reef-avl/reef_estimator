@@ -1,8 +1,17 @@
 <launch>
 
-    <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
-        <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
-        <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
-        <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
-    </node>
+  <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
+      <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
+      <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
+      <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
+      <rosparam>
+          enable_rgbd: true
+          enable_sonar: true
+          enable_mocap_xy: false
+          enable_mocap_z: false
+      </rosparam>
+      <remap from="mocap_ned" to="pose_stamped"/>
+      <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
+      <remap from="rgbd_velocity_body_frame" to="rgbd_velocity/body_level_frame"/>
+  </node>
 </launch>

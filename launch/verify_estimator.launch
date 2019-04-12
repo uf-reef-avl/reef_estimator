@@ -28,19 +28,12 @@
     <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
         <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
         <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
+        <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
         <rosparam>
             enable_rgbd: true
             enable_sonar: true
             enable_mocap_xy: false
             enable_mocap_z: false
-            debug_mode: true
-            enable_partial_update: true
-            enable_mocap_switch: false
-            mahalanobis_d_sonar: 20
-            mahalanobis_d_rgbd_velocity: 80
-            mahalanobis_d_mocap_z: 20
-            mahalanobis_d_mocap_velocity: 50
-            enable_measurements: true
         </rosparam>
         <remap from="mocap_ned" to="pose_stamped"/>
         <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>

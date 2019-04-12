@@ -1,0 +1,22 @@
+<launch>
+
+    <arg name="use_xtion" default="false"/>
+    <arg name="vehicle" default="dodo"/>
+    <arg name="record_bag" default="true"/>
+    <arg name="bag_name" default="test"/>
+
+    <node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">
+        <param name="port" value="/dev/ttyUSB0"/>
+    </node>
+
+    <node pkg="ros_vrpn_client" name="$(arg vehicle)" type="ros_vrpn_client" args="_vrpn_server_ip:=192.168.1.104" required="true" output="screen">
+        <remap from="$(arg vehicle)/ned/pose_stamped" to="pose_stamped"/>
+    </node>
+
+    <include unless="$(arg use_xtion)" file="$(find astra_launch)/launch/astra_pro.launch"/>
+
+
+    <node name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) imu/data sonar status pose_stamped camera/rgb/image_raw camera/rgb/camera_info camera/depth_registered/image_raw"/>
+
+
+</launch>
