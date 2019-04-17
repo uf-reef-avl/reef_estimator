@@ -1,0 +1,53 @@
+<launch>
+
+    <arg name="use_xtion" default="false"/>
+    <arg name="vehicle" default="dodo"/>
+    <arg name="record_bag" default="true"/>
+    <arg name="bag_name" default="test"/>
+    <arg name="run_estimator" default="true"/>
+
+    <node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">
+        <param name="port" value="/dev/ttyUSB0"/>
+    </node>
+
+    <node pkg="ros_vrpn_client" name="$(arg vehicle)" type="ros_vrpn_client" args="_vrpn_server_ip:=192.168.1.104" required="true" output="screen">
+        <remap from="$(arg vehicle)/ned/pose_stamped" to="pose_stamped"/>
+    </node>
+
+    <group if="$(arg run_estimator)">
+      <arg name="control_mode" value="velocity_altitude"/>
+      <include file="$(find reef_teleop)/launch/logitech_controller.launch">
+          <arg name="control_mode" value="$(arg control_mode)"/>
+          <arg name="initial_z_cmd" value="-1.0"/>
+          <arg name="min_z_cmd" value="-3.0"/>
+          <arg name="max_z_cmd" value="0.0"/>
+          <arg name="invert_x" value="false"/>
+          <arg name="x_dot_max" default="2.0"/>
+          <arg name="y_dot_max" default="2.0"/>
+          <arg name="yawrate_max" default="1.57"/>
+      </include>
+
+      <rosparam command="load" file="$(find reef_estimator)/params/dodo_camera.yaml" />
+
+      <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
+          <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
+          <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
+          <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
+          <rosparam>
+              enable_mocap_xy: true
+              enable_mocap_z: true
+          </rosparam>
+          <remap from="mocap_ned" to="pose_stamped"/>
+          <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
+          <remap from="rgbd_velocity_body_frame" to="rgbd_velocity/body_level_frame"/>
+      </node>
+      <node name="pose_to_vel" pkg="position_to_velocity" type="position_to_velocity_node" output="screen" >
+          <rosparam command="load" file="$(find position_to_velocity)/params/basic.yaml" />
+      </node>
+    </group>
+
+
+    <node name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) imu/data sonar status pose_stamped camera/rgb/image_raw camera/rgb/camera_info camera/depth_registered/image_raw"/>
+
+
+</launch>
