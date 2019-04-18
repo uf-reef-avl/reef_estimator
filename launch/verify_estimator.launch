@@ -13,7 +13,7 @@
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
     <group if="$(arg play_bag)">
-        <arg name="bag_path" default="$(find reef_estimator)/bagfiles/20190326_002.bag"/>
+        <arg name="bag_path" default="/home/prashant/Documents/bag_file/20190417_003.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
@@ -76,6 +76,7 @@
         <remap from="image" to="camera/rgb/image_raw" />
     </node>
 
+    <node if="$(arg record_bag)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) sonar pose_stamped xyz_debug_estimate rgbd_velocity/body_level_frame velocity/body_level_frame"/>
 
 
 </launch>
