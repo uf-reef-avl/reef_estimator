@@ -9,6 +9,7 @@
     <arg name="run_plot_juggler" default="true"/>
     <arg name="run_image_view" default="false"/>
     <arg name="run_histogram" default="false"/>
+    <arg name="record_bag" default="true"/>
 
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
