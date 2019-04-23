@@ -29,6 +29,8 @@ The REEF Estimator is built upon the **Estimator** class, which implements a sta
 **REEF Estimator code structure diagram**
 
 ## Implementation
+### Flowchart
+![REEF Estimate Flowchart](./docs/img/flowchart.png)
 ### Prerequisites
 Use the following guides to install the ROS Kinetic environment and the ROSFlight package before installing REEF Estimator:
 
