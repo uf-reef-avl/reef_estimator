@@ -13,9 +13,11 @@
     <node pkg="ros_vrpn_client" name="$(arg vehicle)" type="ros_vrpn_client" args="_vrpn_server_ip:=192.168.1.104" required="true" output="screen">
         <remap from="$(arg vehicle)/ned/pose_stamped" to="pose_stamped"/>
     </node>
+    
+    <include unless="$(arg use_xtion)" file="$(find astra_launch)/launch/astra_pro.launch"/>
 
     <group if="$(arg run_estimator)">
-      <arg name="control_mode" value="velocity_altitude"/>
+      <arg name="control_mode" value="altitude_hold"/>
       <include file="$(find reef_teleop)/launch/logitech_controller.launch">
           <arg name="control_mode" value="$(arg control_mode)"/>
           <arg name="initial_z_cmd" value="-1.0"/>
@@ -26,6 +28,10 @@
           <arg name="y_dot_max" default="2.0"/>
           <arg name="yawrate_max" default="1.57"/>
       </include>
+
+      <rosparam file="$(find reef_control)/params/$(arg vehicle)_pid.yaml" />
+      <node name="reef_control_pid" pkg="reef_control" type="reef_control_node" output="screen"/>
+
 
       <rosparam command="load" file="$(find reef_estimator)/params/dodo_camera.yaml" />
 
