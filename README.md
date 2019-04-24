@@ -14,7 +14,7 @@ The REEF Estimator package contains a set of simple, easy to implement, ROS-base
 ## ROSFlight Integration
 While the REEF Estimator was originally intended to integrate nicely with the [ROSFlight](https://rosflight.org/) flight control platform, it can also be modified to work with any flight controller that provides real-time attitude estimates and control.  The ROSFlight controller runs independently on a [Flip32](http://www.readytoflyquads.com/the-flip32) board (microcontroller + IMU) while the REEF Estimator runs within the ROS environment on an offboard microcomputer connected via USB.  An overview of this implementation is shown below:
 
-![REEF Estimator Overview](./docs/img/overview.png)
+![REEF Estimator Overview](./docs/img/REEF%20Estimator%20ONLY.jpg)
 
 ## Sensors
 The X/Y velocity estimator merges attitude estimates, sensor data from the ROSFlight IMU, and images from a RGBD camera such as the [Astra Pro](https://orbbec3d.com/product-astra-pro/) to produce velocity estimates. If a RGBD camera is unavailable, motion capture data can be substituted using the mocap_to_velocity package (see Installation).
@@ -29,6 +29,8 @@ The REEF Estimator is built upon the **Estimator** class, which implements a sta
 **REEF Estimator code structure diagram**
 
 ## Implementation
+### Flowchart
+![REEF Estimate Flowchart](./docs/img/flowchart.png)
 ### Prerequisites
 Use the following guides to install the ROS Kinetic environment and the ROSFlight package before installing REEF Estimator:
 
