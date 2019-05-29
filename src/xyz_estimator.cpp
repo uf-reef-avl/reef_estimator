@@ -63,7 +63,6 @@ namespace reef_estimator
         ROS_WARN_STREAM("Mahalanobis Distance for RGBD Velocity " << mahalanobis_distance_rgbd_xy_);
         ROS_WARN_STREAM("Mahalanobis Distance for Mocap Z " << mahalanobis_distance_mocap_z);
         ROS_WARN_STREAM("Mahalanobis Distance for Mocap Velocity "  << mahalanobis_distance_mocap_xy_);
-
         // Initialize dt
         private_nh_.param<double>("estimator_dt", dt, 0.002);
         xyEst.dt = zEst.dt = dt;
@@ -76,7 +75,7 @@ namespace reef_estimator
         reef_msgs::importMatrixFromParamServer(private_nh_, xyEst.betaVector, "xy_beta");
         xyEst.Q *= (xyEst.dt*xyEst.dt);
 
-        xyEst.initialize();
+        xyEst.initialize();//Initialize P,R and beta.
 
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.xHat0, "z_x0");
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.P0, "z_P0");
@@ -261,6 +260,9 @@ namespace reef_estimator
         {
             if (chi2AcceptMocapXY(twist_msg))
             {
+                //z is the measurement.
+                xyEst.R(0, 0) = twist_msg.twist.covariance[0];
+                xyEst.R(1, 1) = twist_msg.twist.covariance[7];
                 xyEst.z(0) = twist_msg.twist.twist.linear.x;
                 xyEst.z(1) = twist_msg.twist.twist.linear.y;
                 newRgbdMeasurement = true;

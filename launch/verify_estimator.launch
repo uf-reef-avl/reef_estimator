@@ -2,8 +2,9 @@
 
     <arg name="vehicle" default="dodo"/>
     <arg name="run_estimator" default="true"/>
-    <arg name="use_rgbd" default="true"/>
-    <arg name="run_uncc" default="true"/>
+    <arg name="run_verify" default="false"/>
+    <arg name="use_rgbd" default="false"/>
+    <arg name="run_uncc" default="false"/>
     <arg name="run_mocap_vel" default="true"/>
     <arg name="play_bag" default="true"/>
     <arg name="run_plot_juggler" default="false"/>
@@ -15,7 +16,7 @@
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
     <group if="$(arg play_bag)">
-        <arg name="bag_path" default="/home/prashant/Documents/bag_file/20190417_004.bag"/>
+        <arg name="bag_path" default="/home/turtlebot/REEF_Estimator_Bags/20190410_001.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
@@ -32,10 +33,10 @@
         <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
         <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
         <rosparam>
-            enable_rgbd: true
-            enable_sonar: true
-            enable_mocap_xy: false
-            enable_mocap_z: false
+            enable_rgbd: false
+            enable_sonar: false
+            enable_mocap_xy: true
+            enable_mocap_z: true
         </rosparam>
         <remap from="mocap_ned" to="pose_stamped"/>
         <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
@@ -66,7 +67,7 @@
         Z_offset: 0.0
     </rosparam>
 
-    <node name="verify_estimates" pkg="reef_estimator" type="verify_estimates.py" output="screen">
+    <node if="$(arg run_verify)" name="verify_estimates" pkg="reef_estimator" type="verify_estimates.py" output="screen">
         <remap from="mocap/velocity/body_level_frame" to="velocity/body_level_frame"/>
         <remap from="xyz_debug_estimates" to="xyz_debug_estimate"/>
     </node>
