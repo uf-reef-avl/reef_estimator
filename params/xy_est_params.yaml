@@ -13,10 +13,10 @@ xy_P0: [
 xy_Q: [
   0,    0,    0,    0,    0,    0,
   0,    0,    0,    0,    0,    0,
-  0,    0,    0.01, 0,    0,    0,
-  0,    0,    0,    0.01, 0,    0,
-  0,    0,    0,    0,    0.01, 0,
-  0,    0,    0,    0,    0,    0.01
+  0,    0,    0.04, 0,    0,    0,
+  0,    0,    0,    0.04, 0,    0,
+  0,    0,    0,    0,    0.04, 0,
+  0,    0,    0,    0,    0,    0.04
 ],
 #xy_Q: [
 #  0,    0,    0,    0,    0,    0,
@@ -30,11 +30,11 @@ xy_Q: [
 #When using RGBD R is set dynamically.
 #When using MOCAP this is the value that R takes.
 xy_R0: [
-  0.001, 0,
-  0,    0.001
+  0.002, 0,
+  0,    0.002
 ],
 #Partial Update
 #xdot,  ydot,  roll_bias,  pitch_bias,  accX_bias,  accY_bias.
 xy_x0: [0, 0, 0, 0, 0, 0],
-xy_beta: [0.99,0.99, 0.10, 0.10, 0.005, 0.005] #BEst plot until now
+xy_beta: [0.99,0.99, 0.001, 0.001, 0.001, 0.001] #BEst plot until now
 }
