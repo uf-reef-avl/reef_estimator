@@ -18,7 +18,9 @@
 
     <group if="$(arg play_bag)">
 <!--        <arg name="bag_path" default="/home/turtlebot/reef_est_bags/20190417_003.bag"/>-->
-        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/test_2019-06-11-16-24-07.bag"/>
+<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/smoothtest_bag_filtered.bag"/>-->
+        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/aggressivetest_bag_filtered.bag"/>
+<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/test_2019-06-11-16-24-07.bag"/>-->
 <!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/orientation.bag"/>-->
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
@@ -49,9 +51,8 @@
     <group if="$(arg run_demo_rgbd)">
 <!--        <include file="$(find demo_rgbd)/launch/demo_bag.launch">-->
 <!--        </include>-->
-        <include file="$(find rgbd_to_velocity)/launch/rgbd_to_velocity.launch"/>
-<!--        <rosparam command="load" file="$(find demo_rgbd)/params/kiwi_camera.yaml" />-->
         <include file="$(find demo_rgbd)/launch/demo_rgbd.launch"/>
+        <include file="$(find rgbd_to_velocity)/launch/rgbd_to_velocity.launch"/>
 
     </group>
 
