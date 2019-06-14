@@ -11,7 +11,7 @@
 
     <node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">
         <param name="port" value="/dev/ttyUSB0"/>
-    </node>
+    </node>    
 
     <rosparam file="$(find reef_estimator)/params/dodo_camera.yaml" />
     <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
