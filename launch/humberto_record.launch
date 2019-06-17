@@ -1,7 +1,7 @@
 <launch>
 
     <arg name="vehicle" default="kiwi"/>
-    <arg name="run_estimator" default="true"/>
+    <arg name="run_estimator" default="false"/>
     <arg name="run_verify" default="false"/>
     <arg name="run_odom_to_velocity" default="false"/>
     <arg name="run_uncc" default="false"/>
@@ -11,7 +11,7 @@
     <arg name="run_plot_juggler" default="false"/>
     <arg name="run_image_view" default="false"/>
     <arg name="run_histogram" default="false"/>
-    <arg name="record_bag" default="true"/>
+    <arg name="record_bag" default="false"/>
     <arg name="bag_name" default="test"/>
 
     <node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">

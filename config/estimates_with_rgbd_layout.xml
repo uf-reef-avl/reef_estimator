@@ -1,61 +1,63 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <root>
  <tabbed_widget name="Main Window" parent="main_window">
-  <plotmatrix tab_name="plot" rows="2" columns="1">
-   <plot row="0" col="0">
-    <range top="18.163583" bottom="-1.410239" left="0.000000" right="98.991640"/>
+  <plotmatrix tab_name="plot" columns="1" rows="2">
+   <plot col="0" row="0">
+    <range right="40.991190" left="0.000000" top="1.743609" bottom="-1.516397"/>
     <limitY/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/x" R="95" G="222" B="50"/>
-    <curve custom_transform="noTransform" name="/velocity/body_level_frame/twist/twist/linear/x" R="255" G="18" B="0"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_minus.0" R="234" G="0" B="185"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_plus.0" R="255" G="0" B="183"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/x_dot" R="0" G="1" B="255"/>
+    <curve R="95" B="50" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/x" custom_transform="noTransform" G="222"/>
+    <curve R="0" B="0" name="/velocity/body_level_frame/twist/twist/linear/x" custom_transform="noTransform" G="0"/>
+    <curve R="234" B="185" name="/xyz_debug_estimate/xy_plus/sigma_minus.0" custom_transform="noTransform" G="0"/>
+    <curve R="255" B="183" name="/xyz_debug_estimate/xy_plus/sigma_plus.0" custom_transform="noTransform" G="0"/>
+    <curve R="0" B="255" name="/xyz_debug_estimate/xy_plus/x_dot" custom_transform="noTransform" G="1"/>
     <transform value="noTransform"/>
    </plot>
-   <plot row="1" col="0">
-    <range top="6.513284" bottom="-1.213023" left="0.000000" right="98.991640"/>
+   <plot col="0" row="1">
+    <range right="40.991190" left="0.000000" top="2.517363" bottom="-2.710828"/>
     <limitY/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/y" R="47" G="213" B="67"/>
-    <curve custom_transform="noTransform" name="/velocity/body_level_frame/twist/twist/linear/y" R="255" G="0" B="39"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_minus.1" R="255" G="0" B="180"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_plus.1" R="255" G="0" B="255"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/y_dot" R="29" G="0" B="255"/>
-    <transform value="noTransform"/>
-   </plot>
-  </plotmatrix>
-  <plotmatrix tab_name="plot" rows="2" columns="1">
-   <plot row="0" col="0">
-    <range top="0.996200" bottom="-0.996123" left="-0.002711" right="98.988780"/>
-    <limitY/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/pitch_bias" R="255" G="0" B="0"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_minus.3" R="255" G="0" B="255"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_plus.3" R="0" G="0" B="128"/>
-    <transform value="noTransform"/>
-   </plot>
-   <plot row="1" col="0">
-    <range top="2.017178" bottom="-2.017996" left="-0.002711" right="98.988780"/>
-    <limitY/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_minus.4" R="0" G="128" B="128"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/sigma_plus.4" R="160" G="160" B="164"/>
-    <curve custom_transform="noTransform" name="/xyz_debug_estimate/xy_plus/xa_bias" R="0" G="128" B="0"/>
+    <curve R="47" B="67" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/y" custom_transform="noTransform" G="213"/>
+    <curve R="0" B="0" name="/velocity/body_level_frame/twist/twist/linear/y" custom_transform="noTransform" G="0"/>
+    <curve R="255" B="180" name="/xyz_debug_estimate/xy_plus/sigma_minus.1" custom_transform="noTransform" G="0"/>
+    <curve R="255" B="255" name="/xyz_debug_estimate/xy_plus/sigma_plus.1" custom_transform="noTransform" G="0"/>
+    <curve R="29" B="255" name="/xyz_debug_estimate/xy_plus/y_dot" custom_transform="noTransform" G="0"/>
     <transform value="noTransform"/>
    </plot>
   </plotmatrix>
-  <plotmatrix tab_name="plot" rows="2" columns="1">
-   <plot row="0" col="0">
-    <range top="18.202498" bottom="-1.382541" left="0.010109" right="98.991640"/>
+  <plotmatrix tab_name="plot" columns="1" rows="2">
+   <plot col="0" row="0">
+    <range right="40.991190" left="0.000000" top="0.175385" bottom="-0.175385"/>
     <limitY/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/S_lower_bound.0" R="255" G="24" B="85"/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/S_upper_bound.0" R="255" G="0" B="64"/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/x" R="16" G="0" B="255"/>
+    <curve R="255" B="0" name="/xyz_debug_estimate/xy_plus/pitch_bias" custom_transform="noTransform" G="0"/>
+    <curve R="255" B="255" name="/xyz_debug_estimate/xy_plus/sigma_minus.3" custom_transform="noTransform" G="0"/>
+    <curve R="0" B="128" name="/xyz_debug_estimate/xy_plus/sigma_plus.3" custom_transform="noTransform" G="0"/>
     <transform value="noTransform"/>
    </plot>
-   <plot row="1" col="0">
-    <range top="6.821291" bottom="-1.346307" left="0.010109" right="98.991640"/>
+   <plot col="0" row="1">
+    <range right="40.991190" left="0.000000" top="1.182824" bottom="-1.182824"/>
     <limitY/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/S_lower_bound.1" R="255" G="0" B="36"/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/S_upper_bound.1" R="255" G="0" B="23"/>
-    <curve custom_transform="noTransform" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/y" R="26" G="0" B="255"/>
+    <curve R="0" B="128" name="/xyz_debug_estimate/xy_plus/sigma_minus.4" custom_transform="noTransform" G="128"/>
+    <curve R="160" B="164" name="/xyz_debug_estimate/xy_plus/sigma_plus.4" custom_transform="noTransform" G="160"/>
+    <curve R="0" B="0" name="/xyz_debug_estimate/xy_plus/xa_bias" custom_transform="noTransform" G="128"/>
+    <transform value="noTransform"/>
+   </plot>
+  </plotmatrix>
+  <plotmatrix tab_name="plot" columns="1" rows="2">
+   <plot col="0" row="0">
+    <range right="16.318689" left="13.571725" top="0.715042" bottom="-1.750328"/>
+    <limitY/>
+    <curve R="255" B="85" name="/rgbd_to_velocity/body_level_frame/S_lower_bound.0" custom_transform="noTransform" G="24"/>
+    <curve R="255" B="64" name="/rgbd_to_velocity/body_level_frame/S_upper_bound.0" custom_transform="noTransform" G="0"/>
+    <curve R="16" B="255" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/x" custom_transform="noTransform" G="0"/>
+    <curve R="0" B="0" name="/velocity/body_level_frame/twist/twist/linear/x" custom_transform="noTransform" G="0"/>
+    <transform value="noTransform"/>
+   </plot>
+   <plot col="0" row="1">
+    <range right="16.318689" left="13.571725" top="0.337912" bottom="-0.609800"/>
+    <limitY/>
+    <curve R="255" B="36" name="/rgbd_to_velocity/body_level_frame/S_lower_bound.1" custom_transform="noTransform" G="0"/>
+    <curve R="255" B="23" name="/rgbd_to_velocity/body_level_frame/S_upper_bound.1" custom_transform="noTransform" G="0"/>
+    <curve R="26" B="255" name="/rgbd_to_velocity/body_level_frame/vel/twist/twist/linear/y" custom_transform="noTransform" G="0"/>
+    <curve R="0" B="0" name="/velocity/body_level_frame/twist/twist/linear/y" custom_transform="noTransform" G="0"/>
     <transform value="noTransform"/>
    </plot>
   </plotmatrix>
@@ -73,7 +75,7 @@
    <no_params/>
   </DataLoad_ULog>
   <ROS_Topic_Streamer>
-   <selected_topics list="/rgbd_to_velocity/body_level_frame;/velocity/body_level_frame;/xyz_debug_estimate;/rgbd_to_velocity/init_frame"/>
+   <selected_topics list="/rgbd_to_velocity/body_level_frame;/rgbd_to_velocity/init_frame;/velocity/body_level_frame;/xyz_debug_estimate"/>
   </ROS_Topic_Streamer>
   <RosoutPublisherROS/>
   <TopicPublisherROS/>

@@ -1,7 +1,7 @@
 <launch>
 
     <arg name="vehicle" default="kiwi"/>
-    <arg name="run_estimator" default="true"/>
+    <arg name="run_estimator" default="false"/>
     <arg name="run_verify" default="false"/>
     <arg name="run_odom_to_velocity" default="false"/>
     <arg name="run_uncc" default="false"/>
@@ -19,9 +19,9 @@
     <group if="$(arg play_bag)">
 <!--        <arg name="bag_path" default="/home/turtlebot/reef_est_bags/20190417_003.bag"/>-->
 <!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/smoothtest_bag_filtered.bag"/>-->
-        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/aggressivetest_bag_filtered.bag"/>
+<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/aggressivetest_bag_filtered.bag"/>-->
 <!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/test_2019-06-11-16-24-07.bag"/>-->
-<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/orientation.bag"/>-->
+        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/PrashantsGoodieBag.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
