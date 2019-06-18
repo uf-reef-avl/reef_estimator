@@ -9,7 +9,7 @@
     <arg name="run_mocap_vel" default="true"/>
     <arg name="play_bag" default="true"/>
     <arg name="run_plot_juggler" default="false"/>
-    <arg name="run_image_view" default="false"/>
+    <arg name="run_image_view" default="true"/>
     <arg name="run_histogram" default="false"/>
     <arg name="record_bag" default="false"/>
     <arg name="bag_name" default="test"/>
@@ -21,7 +21,8 @@
 <!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/smoothtest_bag_filtered.bag"/>-->
 <!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/aggressivetest_bag_filtered.bag"/>-->
 <!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/test_2019-06-11-16-24-07.bag"/>-->
-        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/PrashantsGoodieBag.bag"/>
+<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/SweetCandyBag.bag"/>-->
+        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/HealthyFruitBag.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
