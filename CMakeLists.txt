@@ -12,7 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
     roscpp
     rospy
     geometry_msgs
-    rosflight
     rosflight_msgs
     sensor_msgs
     std_msgs

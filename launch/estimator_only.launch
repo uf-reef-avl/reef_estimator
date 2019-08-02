@@ -1,6 +1,6 @@
 <launch>
 
-  <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
+  <node name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
       <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
       <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
       <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />

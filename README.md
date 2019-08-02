@@ -44,7 +44,6 @@ Use the following guides to install the ROS Kinetic environment and the ROSFligh
 roscpp
 rospy
 geometry_msgs
-rosflight
 rosflight_msgs
 sensor_msgs
 std_msgs

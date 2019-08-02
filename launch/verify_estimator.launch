@@ -17,11 +17,6 @@
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
     <group if="$(arg play_bag)">
-<!--        <arg name="bag_path" default="/home/turtlebot/reef_est_bags/20190417_003.bag"/>-->
-<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/smoothtest_bag_filtered.bag"/>-->
-<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/aggressivetest_bag_filtered.bag"/>-->
-<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/test_2019-06-11-16-24-07.bag"/>-->
-<!--        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/SweetCandyBag.bag"/>-->
         <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/HealthyFruitBag.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
@@ -50,11 +45,8 @@
 
 
     <group if="$(arg run_demo_rgbd)">
-<!--        <include file="$(find demo_rgbd)/launch/demo_bag.launch">-->
-<!--        </include>-->
         <include file="$(find demo_rgbd)/launch/demo_rgbd.launch"/>
         <include file="$(find rgbd_to_velocity)/launch/rgbd_to_velocity.launch"/>
-
     </group>
 
 
@@ -64,14 +56,9 @@
             <rosparam command="load" file="$(find odom_to_velocity)/params/basic.yaml" />
         </node>
 
-<!--        <include if="$(arg run_uncc)" file="$(find uncc_rgbd_odom)/launch/odom_only.launch">-->
-<!--            <arg name="rgb_topic" default="image_raw"/>-->
-<!--            <arg name="depth_topic" default="image_raw"/>-->
-<!--        </include>-->
-
         <include if="$(arg run_uncc)" file="$(find uncc_rgbd_odom)/launch/astra_rgbd.launch">
-<!--            <arg name="rgb_topic" default="image_raw"/>-->
-<!--            <arg name="depth_topic" default="image_raw"/>-->
+            <arg name="rgb_topic" default="image_raw"/>
+            <arg name="depth_topic" default="image_raw"/>
         </include>
     </group>
 
@@ -80,13 +67,12 @@
         <rosparam command="load" file="$(find position_to_velocity)/params/basic.yaml" />
     </node>
 
-    <rosparam>
-        use_sonar: false
-        SD_Multiplied: 1
-        Z_offset: 0.0
-    </rosparam>
-
     <node if="$(arg run_verify)" name="verify_estimates" pkg="reef_estimator" type="verify_estimates.py" output="screen">
+        <rosparam>
+            use_sonar: false
+            SD_Multiplied: 1
+            Z_offset: 0.0
+        </rosparam>
         <remap from="mocap/velocity/body_level_frame" to="velocity/body_level_frame"/>
         <remap from="xyz_debug_estimates" to="xyz_debug_estimate"/>
     </node>
