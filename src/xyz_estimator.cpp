@@ -144,6 +144,11 @@ namespace reef_estimator
         xyzState.header.stamp = imu.header.stamp;
         xyzDebugState.header.stamp = imu.header.stamp;
 
+        if (isnan(getVectorMagnitude(imu.linear_acceleration.x, imu.linear_acceleration.y,imu.linear_acceleration.z))){
+            ROS_ERROR_STREAM("IMU is giving NaNs");
+            return;
+        }
+
         //Make sure accelerometer is initialized
         if (!accInitialized) {
             initializeAcc(imu.linear_acceleration);
