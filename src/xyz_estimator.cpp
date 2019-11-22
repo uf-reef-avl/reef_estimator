@@ -231,7 +231,7 @@ namespace reef_estimator
     {
         if (!useMocapXY)
         {
-            if (chi2AcceptRgbd(twist_msg.vel))
+//            if (chi2AcceptRgbd(twist_msg.vel))
             {
                 xyEst.R(0, 0) = twist_msg.vel.twist.covariance[0];
                 xyEst.R(1, 1) = twist_msg.vel.twist.covariance[7];
@@ -249,7 +249,7 @@ namespace reef_estimator
         {
             if (range_msg.range <= range_msg.max_range) 
             {
-                if (chi2Accept(range_msg.range)) 
+//                if (chi2Accept(range_msg.range))
                 {
                     zEst.z(0) = -range_msg.range; // negative size to convert to NED
                     newSonarMeasurement = true;
@@ -263,7 +263,7 @@ namespace reef_estimator
     {
         if (useMocapXY)
         {
-            if (chi2AcceptMocapXY(twist_msg))
+//            if (chi2AcceptMocapXY(twist_msg))
             {
                 //z is the measurement.
                 xyEst.R(0, 0) = twist_msg.twist.covariance[0];
@@ -281,7 +281,7 @@ namespace reef_estimator
 
         if (useMocapZ) 
         {
-            if (chi2AcceptMocapZ(pose_msg.pose.position.z)) 
+//            if (chi2AcceptMocapZ(pose_msg.pose.position.z))
             {
                 zEst.z(0) = pose_msg.pose.position.z;
                 newSonarMeasurement = true;
