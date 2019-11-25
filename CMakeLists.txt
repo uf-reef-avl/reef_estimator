@@ -38,7 +38,7 @@ add_executable(
     src/xy_estimator.cpp
 )
 
-add_dependencies(reef_estimator ${catkin_EXPORTED_TARGETS} reef_msgs_generate_messages_cpp reef_msgs)
+add_dependencies(reef_estimator ${catkin_EXPORTED_TARGETS})
 target_link_libraries(reef_estimator ${catkin_LIBRARIES})
 
 catkin_install_python(PROGRAMS scripts/verify_estimates.py
