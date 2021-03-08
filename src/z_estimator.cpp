@@ -7,12 +7,12 @@ namespace reef_estimator
     ZEstimator::ZEstimator() : Estimator()
     {
         // Move P R and x_0 beta vector from yaml
-        dt = 0.002;
-             
+        dt = 0.005;
+
         //Initial state
         F = Eigen::MatrixXd(3, 3);
-        F << 1, dt, dt*dt*0.5,
-             0, 1,  dt,
+        F << 1, dt, 0,
+             0, 1,  -dt,
              0, 0,  1;
         B = Eigen::MatrixXd(3,1);
         B <<    0,
@@ -42,6 +42,7 @@ namespace reef_estimator
         P0forFlying = Eigen::MatrixXd(3,3);
         P = Eigen::MatrixXd(3,3);
         Q = Eigen::MatrixXd(2,2);
+        Q0 = Eigen::MatrixXd(2,2);
         xHat0 = Eigen::MatrixXd(3,1);
 
         //R0 represents a pseudo covariance that we use to initiate the propagations,
@@ -63,6 +64,21 @@ namespace reef_estimator
 
         //Reset velocity estimate
         xHat(1) = xHat0(1);
+    }
+
+    void ZEstimator::updateLinearModel()
+    {
+        //Initial state
+        F << 1, dt, 0,
+                0, 1,  -dt,
+                0, 0,  1;
+        B <<    0,
+                1*dt,
+                0;
+        G <<    0, 0,
+                1, 0,
+                0, 1;
+        Q = Q0*(dt);
     }
 
     void ZEstimator::setTakeoffState(bool takeoff)

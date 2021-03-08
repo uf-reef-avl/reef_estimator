@@ -17,6 +17,8 @@ namespace reef_estimator
             /*This class is inherited from Estimator, thus
             it has update and propagate methods already.
              */
+        void updateLinearModel();
+
     };
 }
 

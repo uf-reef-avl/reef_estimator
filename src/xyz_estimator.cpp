@@ -80,12 +80,12 @@ namespace reef_estimator
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.xHat0, "z_x0");
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.P0, "z_P0");
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.P0forFlying, "z_P0_flying");
-        reef_msgs::importMatrixFromParamServer(private_nh_, zEst.Q, "z_Q");
+        reef_msgs::importMatrixFromParamServer(private_nh_, zEst.Q0, "z_Q");
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.R0, "z_R0");
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.RforFlying, "z_R_flying");
         reef_msgs::importMatrixFromParamServer(private_nh_, zEst.betaVector, "z_beta");
-        zEst.Q *= (zEst.dt);
-
+        zEst.Q = zEst.Q0*(zEst.dt);
+        zEst.updateLinearModel();
         zEst.initialize();
         zEst.setTakeoffState(false);
 
@@ -134,6 +134,9 @@ namespace reef_estimator
             accSampleAverage.z /= ACC_SAMPLE_SIZE;
 
             initialAccMagnitude = getVectorMagnitude(accSampleAverage.x, accSampleAverage.y, accSampleAverage.z);
+            initialAccMagnitude = 9.81;
+            ROS_INFO_STREAM("initial g: " << std::endl << initialAccMagnitude << std::endl);
+
             accInitialized = true;
         }
     }
@@ -174,8 +177,11 @@ namespace reef_estimator
         zEst.u(0) = accelxyz_in_NED_frame(2) + initialAccMagnitude; //We need to take avg from csv file to get a better g.
         //        zEst.u(0) = accelxyz_in_NED_frame(2) + initialAccMagnitude + zEst.xHat(2); //We need to take avg from csv file to get a better g.
 
+
+
         //Finally propagate.
         xyEst.nonlinearPropagation(C_NED_to_body_frame, initialAccMagnitude, accelxyz_in_body_frame, zEst.xHat(2));
+        zEst.updateLinearModel();
         zEst.propagate();
 
         //Update state publisher with states, error, and three sigma bounds
@@ -206,12 +212,14 @@ namespace reef_estimator
         }
 
         if (enableXY && newRgbdMeasurement) {
-            if(enable_partial_update)
+            if(enable_partial_update) {
                 xyEst.partialUpdate();
-            else
-                xyEst.update();
-            newRgbdMeasurement = false;
-        }
+            }
+                else{
+                    xyEst.update();
+                    newRgbdMeasurement = false;
+                }
+            }
 
         if (enableZ && newSonarMeasurement) {
             //TODO adjust estimator to perform partialUpdate on z as well.
