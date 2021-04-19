@@ -237,12 +237,16 @@ namespace reef_estimator
 
     void XYZEstimator::rgbdUpdate(reef_msgs::DeltaToVel twist_msg)
     {
+        if (isnan(getVectorMagnitude(twist_msg.vel.twist.twist.linear.x, twist_msg.vel.twist.twist.linear.y,twist_msg.vel.twist.twist.linear.z))){
+            ROS_ERROR_STREAM("RGBD Velocity is giving NaNs");
+            return;
+        }
         if (!useMocapXY)
         {
             if (chi2AcceptRgbd(twist_msg.vel))
             {
-                xyEst.R(0, 0) = twist_msg.vel.twist.covariance[0];
-                xyEst.R(1, 1) = twist_msg.vel.twist.covariance[7];
+                xyEst.R(0, 0) = 0.1*0.1;
+                xyEst.R(1, 1) = 0.1*0.1;
                 xyEst.z(0) = twist_msg.vel.twist.twist.linear.x;
                 xyEst.z(1) = twist_msg.vel.twist.twist.linear.y;
                 newRgbdMeasurement = true;
