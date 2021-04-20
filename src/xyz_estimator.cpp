@@ -245,8 +245,8 @@ namespace reef_estimator
         {
             if (chi2AcceptRgbd(twist_msg.vel))
             {
-                xyEst.R(0, 0) = 0.1*0.1;
-                xyEst.R(1, 1) = 0.1*0.1;
+                xyEst.R(0, 0) = 0.15*0.15;
+                xyEst.R(1, 1) = 0.15*0.15;
                 xyEst.z(0) = twist_msg.vel.twist.twist.linear.x;
                 xyEst.z(1) = twist_msg.vel.twist.twist.linear.y;
                 newRgbdMeasurement = true;

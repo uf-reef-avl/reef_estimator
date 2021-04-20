@@ -1,0 +1,56 @@
+<launch>
+
+    <arg name="vehicle" default="ace"/>
+    <arg name="vehicle_type" default="quad"/>
+    <arg name="run_estimator" default="true"/>
+    <arg name="run_rgbd" default="true"/>
+
+    <arg name="control_mode" value="velocity_altitude"/>
+    <arg name="record_bag" default="true"/>
+    <arg name="bag_name" default="velocity_control"/>
+
+    <!--    Launches the ROSFlight node to interface with the Flip32 Board-->
+    <node name="rosflight" pkg="rosflight" type="rosflight_io" output="screen">
+        <param name="port" value="/dev/ttyUSB0"/>
+    </node>
+
+    <!--    Loads the camera to mocap-marker calibration-->
+    <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
+
+    <!--    Runs the REEF estimator-->
+    <node if="$(arg run_estimator)" name="reef_estimator" pkg="reef_estimator" type="reef_estimator" output="screen">
+        <rosparam file="$(find reef_estimator)/params/xy_est_params.yaml" />
+        <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
+        <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
+        <rosparam>
+            enable_rgbd: true
+            enable_sonar: true
+            enable_mocap_xy: false
+            enable_mocap_z: false
+        </rosparam>
+        <remap from="rgbd_velocity_body_frame" to="rgbd_to_velocity/body_level_frame"/>
+    </node>
+
+    <!--    Runs the DEMO RGBD node to produce velocity estimates from RGBD images. Also launches the camera drives-->
+    <group if="$(arg run_rgbd)">
+        <include file="$(find realsense2_camera)/launch/rs_rgbd.launch"/>
+
+        <group ns="dvo_vis">
+            <node pkg="dvo_ros" type="camera_tracker" name="camera_tracker" output="screen">
+                <remap from="/camera/depth_registered/camera_info" to="/camera/aligned_depth_to_color/camera_info"/>
+                <remap from="/camera/depth_registered/input_image" to="/camera/aligned_depth_to_color/image_raw"/>
+                <remap from="/camera/rgb/camera_info" to="/camera/color/camera_info"/>
+                <remap from="/camera/rgb/input_image" to="/camera/color/image_raw"/>
+            </node>
+        </group>
+
+        <node name="rgbd_to_velocity" pkg="rgbd_to_velocity" type="rgbd_to_velocity" output="screen">
+            <rosparam command="load" file="$(find rgbd_to_velocity)/params/rgbd_to_velocity_params.yaml" />
+            <rosparam command="load" file="$(find rgbd_to_velocity)/params/kiwi_camera.yaml" />
+            <remap from="dvo_pose" to="dvo_vis/rgbd/pose"/>
+        </node>
+    </group>
+
+    <node if="$(arg record_bag)" name="record" pkg="rosbag" type="record" args="-O $(arg bag_name) dvo_vis/rgbd/pose attitude attitude/euler rgbd_to_velocity/body_level_frame rc_raw imu/data sonar status xyz_debug_estimate xyz_estimate rgbd_velocity/body_level_frame "/>
+
+</launch>
