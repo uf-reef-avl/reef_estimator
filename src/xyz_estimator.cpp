@@ -245,8 +245,8 @@ namespace reef_estimator
         {
             if (chi2AcceptRgbd(twist_msg.vel))
             {
-                xyEst.R(0, 0) = 0.15*0.15;
-                xyEst.R(1, 1) = 0.15*0.15;
+                xyEst.R(0, 0) = 0.35*0.35;
+                xyEst.R(1, 1) = 0.35*0.35;
                 xyEst.z(0) = twist_msg.vel.twist.twist.linear.x;
                 xyEst.z(1) = twist_msg.vel.twist.twist.linear.y;
                 newRgbdMeasurement = true;
@@ -330,7 +330,6 @@ namespace reef_estimator
 
     bool XYZEstimator::chi2AcceptRgbd(geometry_msgs::TwistWithCovarianceStamped twist_msg) 
     {
-
         //Compute Mahalanobis distance.
        measurement << twist_msg.twist.twist.linear.x, twist_msg.twist.twist.linear.y;
        expected_rgbd = xyEst.H * xyEst.xHat;
