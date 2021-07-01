@@ -25,7 +25,7 @@
 #include <iostream>
 
 #define ACC_SAMPLE_SIZE 20
-#define ACC_TAKEOFF_VARIANCE 0.5
+#define ACC_TAKEOFF_VARIANCE 0.2
 #define SONAR_SAMPLE_SIZE 40
 #define SONAR_TAKEOFF_VARIANCE 0.000002
 #define SONAR_OFFSET 0.010
@@ -44,6 +44,7 @@ namespace reef_estimator
         //Estimator enable/disable variables
         bool enableXY;
         bool enableZ;
+        bool imuIsFromPixhawk;
 
         //Instantiate a ZEstimator
         ZEstimator zEst;
@@ -124,7 +125,8 @@ namespace reef_estimator
         void mocapUpdate(geometry_msgs::TwistWithCovarianceStamped twist_msg);
         void rgbdUpdate(reef_msgs::DeltaToVel twist_msg);
 
-        };
+        sensor_msgs::Imu transformImuToNed(sensor_msgs::Imu imu);
+    };
 
     double getVectorMagnitude(double x, double y, double z);
 }

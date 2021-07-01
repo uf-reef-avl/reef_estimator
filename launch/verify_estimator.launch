@@ -1,15 +1,15 @@
 <launch>
 
     <arg name="vehicle" default="kiwi"/>
-    <arg name="run_estimator" default="false"/>
+    <arg name="run_estimator" default="true"/>
     <arg name="run_verify" default="false"/>
     <arg name="run_odom_to_velocity" default="false"/>
     <arg name="run_uncc" default="false"/>
-    <arg name="run_demo_rgbd" default="true"/>
+    <arg name="run_demo_rgbd" default="false"/>
     <arg name="run_mocap_vel" default="true"/>
     <arg name="play_bag" default="true"/>
     <arg name="run_plot_juggler" default="false"/>
-    <arg name="run_image_view" default="true"/>
+    <arg name="run_image_view" default="false"/>
     <arg name="run_histogram" default="false"/>
     <arg name="record_bag" default="false"/>
     <arg name="bag_name" default="test"/>
@@ -17,7 +17,8 @@
     <rosparam command="load" file="$(find reef_estimator)/params/$(arg vehicle)_camera.yaml" />
 
     <group if="$(arg play_bag)">
-        <arg name="bag_path" default="/home/turtlebot/bags_demo_rgbd/HealthyFruitBag.bag"/>
+<!--        <arg name="bag_path" default="/home/humberto/Downloads/adapative_control_bag_filtered.bag"/>-->
+        <arg name="bag_path" default="/home/humberto/data_ardupilot_reef_estimator/pixhawk-90hz.bag"/>
         <node pkg="rosbag" type="play" name="player" output="screen" args="--clock --pause $(arg bag_path)"/>
     </group>
 
@@ -33,14 +34,15 @@
         <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
         <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
         <rosparam>
-            enable_rgbd: true
-            enable_sonar: true
-            enable_mocap_xy: false
-            enable_mocap_z: false
+            enable_rgbd: false
+            enable_sonar: false
+            enable_mocap_xy: true
+            enable_mocap_z: true
         </rosparam>
-        <remap from="mocap_ned" to="pose_stamped"/>
+        <remap from="mocap_ned" to="/bugstomper/ned/pose_stamped"/>
         <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
         <remap from="rgbd_velocity_body_frame" to="rgbd_to_velocity/body_level_frame"/>
+        <remap from="imu/data" to="/mavros/imu/data"/>
     </node>
 
 
@@ -65,6 +67,7 @@
 
     <node if="$(arg run_mocap_vel)" name="pose_to_vel" pkg="position_to_velocity" type="position_to_velocity_node" output="screen" >
         <rosparam command="load" file="$(find position_to_velocity)/params/basic.yaml" />
+        <remap from="pose_stamped" to="/bugstomper/ned/pose_stamped"/>
     </node>
 
     <node if="$(arg run_verify)" name="verify_estimates" pkg="reef_estimator" type="verify_estimates.py" output="screen">

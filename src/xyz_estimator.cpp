@@ -7,21 +7,22 @@
 namespace reef_estimator
 {
     XYZEstimator::XYZEstimator() : private_nh_("~"),
-    nh_(""),
-    numberOfPropagations(0),
-    accInitialized(false),
-    accInitSampleCount(0),
-    numAccSamples(0),
-    numSonarSamples(0),
-    accMean(0),
-    accVariance(0),
-    sonarMean(0),
-    sonarVariance(0),
-    sonarTakeoffState(false),
-    accTakeoffState(false),
-    newSonarMeasurement(false),
-    newRgbdMeasurement(false),
-    rgbdCounter(0)
+                                   nh_(""),
+                                   numberOfPropagations(0),
+                                   accInitialized(false),
+                                   accInitSampleCount(0),
+                                   numAccSamples(0),
+                                   numSonarSamples(0),
+                                   accMean(0),
+                                   accVariance(0),
+                                   sonarMean(0),
+                                   sonarVariance(0),
+                                   sonarTakeoffState(false),
+                                   accTakeoffState(false),
+                                   newSonarMeasurement(false),
+                                   newRgbdMeasurement(false),
+                                   rgbdCounter(0),
+                                   imuIsFromPixhawk(false)
     {
         private_nh_.param<bool>("debug_mode", debug_mode_, false);
         if (debug_mode_) {
@@ -48,6 +49,7 @@ namespace reef_estimator
 
         private_nh_.param<bool>("enable_mocap_z", enableMocapZ, true);
         private_nh_.param<bool>("enable_sonar", enableSonar, true);
+        private_nh_.param<bool>("imuIsFromPixhawk", imuIsFromPixhawk, false);
         useMocapZ = enableMocapZ && !enableSonar;
         if (!enableSonar) {
             ROS_WARN("Sonar feedback disabled.");
@@ -141,8 +143,14 @@ namespace reef_estimator
         }
     }
 /** Sensor update for the IMU. */
-    void XYZEstimator::sensorUpdate(sensor_msgs::Imu imu) 
+    void XYZEstimator::sensorUpdate(sensor_msgs::Imu imu)
     {
+        if(imuIsFromPixhawk){
+//            ROS_WARN_STREAM("Before<<\n"<<imu);
+           imu = transformImuToNed(imu);
+//            ROS_WARN_STREAM("After<<\n"<<imu);
+
+        }
         //Save the stamp. This is very important for good book-keeping.
         xyzState.header.stamp = imu.header.stamp;
         xyzDebugState.header.stamp = imu.header.stamp;
@@ -169,7 +177,7 @@ namespace reef_estimator
 
         //Transform accel measurements from body to NED frame.
         accelxyz_in_body_frame << imu.linear_acceleration.x, imu.linear_acceleration.y, imu.linear_acceleration.z; //This is a column vector.
-        accelxyz_in_NED_frame = C_NED_to_body_frame.transpose() * accelxyz_in_body_frame;
+        accelxyz_in_NED_frame = C_NED_to_body_frame.transpose() * accelxyz_in_body_frame;//Note that even though we use
 
         /*The specific force model is the following s = a_measured - bias_accel - noise_accel - gravity
          * The bias that is being estimated is in the inertial frame (NED)
@@ -183,6 +191,15 @@ namespace reef_estimator
         xyEst.nonlinearPropagation(C_NED_to_body_frame, initialAccMagnitude, accelxyz_in_body_frame, zEst.xHat(2));
         zEst.updateLinearModel();
         zEst.propagate();
+
+        //Testing with handheld quad
+        double rollx, pitchy,yawz;
+        reef_msgs::roll_pitch_yaw_from_quaternion(imu.orientation,rollx,pitchy,yawz);
+        ROS_INFO_STREAM("Roll||"<<rollx<<"Pitch||"<<pitchy<<"Yaw"<<yawz);
+
+
+
+
 
         //Update state publisher with states, error, and three sigma bounds
 
@@ -221,8 +238,10 @@ namespace reef_estimator
                 }
             }
 
-        if (enableZ && newSonarMeasurement) {
+//        ROS_WARN_STREAM("\n "<<zEst.P);
+                if (enableZ && newSonarMeasurement) {
             //TODO adjust estimator to perform partialUpdate on z as well.
+//
             if(enable_partial_update)
                 zEst.partialUpdate();
             else
@@ -293,6 +312,7 @@ namespace reef_estimator
             {
                 zEst.z(0) = pose_msg.pose.position.z;
                 newSonarMeasurement = true;
+
             }
         }
     }
@@ -471,6 +491,10 @@ namespace reef_estimator
                 }
                 accVariance /= (double) (ACC_SAMPLE_SIZE - 1);
                 accTakeoffState = accVariance >= ACC_TAKEOFF_VARIANCE;
+                if(accVariance >= ACC_TAKEOFF_VARIANCE){
+//                            ROS_WARN_STREAM("trueeeeee");
+
+                }
             }
         } 
         else if (numAccSamples > 0) 
@@ -479,7 +503,8 @@ namespace reef_estimator
         }
 
         //Publish changes in takeoff state
-        if (accTakeoffState && sonarTakeoffState && !takeoffState.data) 
+
+        if (accTakeoffState && sonarTakeoffState && !takeoffState.data)
         {
             ROS_INFO("Takeoff!");
 
@@ -591,9 +616,11 @@ namespace reef_estimator
             xyzDebugState.z_plus.bias = zEst.xHat(2);
             xyzDebugState.z_plus.u = zEst.u(0);
             reef_msgs::matrixToArray(zEst.P, xyzDebugState.z_plus.P);
+
             zSigma(0) = 3 * sqrt(zEst.P(0, 0));
             zSigma(1) = 3 * sqrt(zEst.P(1, 1));
             zSigma(2) = 3 * sqrt(zEst.P(2, 2));
+//            ROS_WARN_STREAM("\n"<<zSigma);
             xyzDebugState.z_plus.sigma_plus[0] = xyzDebugState.z_plus.z + zSigma(0);
             xyzDebugState.z_plus.sigma_minus[0] = xyzDebugState.z_plus.z - zSigma(0);
             xyzDebugState.z_plus.sigma_plus[1] = xyzDebugState.z_plus.z_dot + zSigma(1);
@@ -604,6 +631,58 @@ namespace reef_estimator
             debug_state_publisher_.publish(xyzDebugState);
 
         }
+    }
+
+    sensor_msgs::Imu XYZEstimator::transformImuToNed(sensor_msgs::Imu imu) {
+
+        Eigen::Vector3d accel;
+        Eigen::Vector3d gyro;
+        Eigen::Quaterniond  q_imu;
+        Eigen::Matrix3d C_inertial_NWU_to_body_in_NWU;
+        Eigen::Matrix3d C_inertial_NWU_to_inertial_NED;
+        Eigen::Matrix3d C_inertial_NED_to_body_frame_in_NED;
+
+        accel << imu.linear_acceleration.x,imu.linear_acceleration.y,imu.linear_acceleration.z;
+        gyro << imu.angular_velocity.x,imu.angular_velocity.y,imu.angular_velocity.z;
+
+
+        C_inertial_NWU_to_body_in_NWU = reef_msgs::quaternion_to_rotation(imu.orientation);
+        C_inertial_NWU_to_inertial_NED<< 1, 0 ,0 ,
+                       0, -1, 0,
+                       0,  0, -1;
+        //Transformation from NWU to NED.
+        C_inertial_NED_to_body_frame_in_NED = C_inertial_NWU_to_inertial_NED*C_inertial_NWU_to_body_in_NWU*C_inertial_NWU_to_inertial_NED.transpose();
+        //Transformed acceleration. Compute in place.
+        accel = C_inertial_NWU_to_inertial_NED*accel;
+        //Transformed gyroscope. Compute in place.
+        gyro = C_inertial_NWU_to_inertial_NED*gyro;
+        //Transformed orientation in quaternion form.
+        q_imu = reef_msgs::DCM2quat(C_inertial_NED_to_body_frame_in_NED);
+
+        sensor_msgs::Imu new_imu;
+        //Save quaternion
+//        new_imu.orientation.x = q_imu.x();
+//        new_imu.orientation.y = q_imu.y();
+//        new_imu.orientation.z = q_imu.z();
+//        new_imu.orientation.w = q_imu.w();
+            new_imu.orientation = imu.orientation;
+
+        //Save accel
+        new_imu.linear_acceleration.x = accel.x();
+        new_imu.linear_acceleration.y = accel.y();
+        new_imu.linear_acceleration.z = accel.z();
+
+        //Save gyro
+//        new_imu.angular_velocity.x = gyro.x();
+//        new_imu.angular_velocity.y = gyro.y();
+//        new_imu.angular_velocity.z = gyro.z();
+        new_imu.angular_velocity = imu.angular_velocity;
+
+        //time stamp
+        new_imu.header = imu.header;
+
+//        ROS_WARN_STREAM(new_imu);
+        return new_imu;
     }
 
     //Utility function
