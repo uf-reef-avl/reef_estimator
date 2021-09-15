@@ -1,0 +1,12 @@
+<launch>
+
+<node name="pixhawk_xform" type="pixhawk_xform" pkg="pixhawk_xform" output="screen"/>
+
+    
+<include file="$(find mavros)/launch/apm.launch">    
+  <arg name="fcu_url" value="/dev/ttyUSB0:921600?ids=255,240"/>
+</include>
+    
+<node pkg="rosservice" type="rosservice" name="setter" args="call --wait /uav/mavros/set_stream_rate 0 10 1" />
+
+</launch>

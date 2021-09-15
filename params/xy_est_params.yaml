@@ -30,8 +30,8 @@ xy_Q: [
 #When using RGBD R is set dynamically.
 #When using MOCAP this is the value that R takes.
 xy_R0: [
-  0.02, 0,
-  0,    0.02
+  0.1, 0,
+  0,    0.1
 ],
 #Partial Update
 #xdot,  ydot,  roll_bias,  pitch_bias,  accX_bias,  accY_bias.

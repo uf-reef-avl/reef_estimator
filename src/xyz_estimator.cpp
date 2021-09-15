@@ -146,7 +146,7 @@ namespace reef_estimator
     void XYZEstimator::sensorUpdate(sensor_msgs::Imu imu)
     {
         if(imuIsFromPixhawk){
-//            ROS_WARN_STREAM("Before<<\n"<<imu);
+           // ROS_WARN_STREAM("Before<<\n"<<imu);
            imu = transformImuToNed(imu);
 //            ROS_WARN_STREAM("After<<\n"<<imu);
 
@@ -195,7 +195,7 @@ namespace reef_estimator
         //Testing with handheld quad
         double rollx, pitchy,yawz;
         reef_msgs::roll_pitch_yaw_from_quaternion(imu.orientation,rollx,pitchy,yawz);
-        ROS_INFO_STREAM("Roll||"<<rollx<<"Pitch||"<<pitchy<<"Yaw"<<yawz);
+        // ROS_INFO_STREAM("Roll||"<<rollx<<"Pitch||"<<pitchy<<"Yaw"<<yawz);
 
 
 
@@ -657,25 +657,19 @@ namespace reef_estimator
         //Transformed gyroscope. Compute in place.
         gyro = C_inertial_NWU_to_inertial_NED*gyro;
         //Transformed orientation in quaternion form.
-        q_imu = reef_msgs::DCM2quat(C_inertial_NED_to_body_frame_in_NED);
+        //This is the orientation of the IMU in the inertial frame. This is how it originally should come.
+        q_imu = reef_msgs::DCM2quat(C_inertial_NED_to_body_frame_in_NED); 
 
         sensor_msgs::Imu new_imu;
-        //Save quaternion
-//        new_imu.orientation.x = q_imu.x();
-//        new_imu.orientation.y = q_imu.y();
-//        new_imu.orientation.z = q_imu.z();
-//        new_imu.orientation.w = q_imu.w();
-            new_imu.orientation = imu.orientation;
+        //Save quaternion. NO change; orientation is already in NED frame.
+        new_imu.orientation = imu.orientation;
 
         //Save accel
         new_imu.linear_acceleration.x = accel.x();
         new_imu.linear_acceleration.y = accel.y();
         new_imu.linear_acceleration.z = accel.z();
 
-        //Save gyro
-//        new_imu.angular_velocity.x = gyro.x();
-//        new_imu.angular_velocity.y = gyro.y();
-//        new_imu.angular_velocity.z = gyro.z();
+        //Save gyro. NO change; angular velocity is already in NED frame.
         new_imu.angular_velocity = imu.angular_velocity;
 
         //time stamp
