@@ -162,7 +162,8 @@ namespace reef_estimator
         xyEst.dt = imu.header.stamp.toSec() - last_time_stamp;
         zEst.dt = imu.header.stamp.toSec() - last_time_stamp;
         last_time_stamp = imu.header.stamp.toSec();
-
+        zEst.dt = 1/280.0;
+        xyEst.dt = zEst.dt;
         C_NED_to_body_frame = reef_msgs::quaternion_to_rotation(imu.orientation);
         //TODO incorporate rotation into range measurement.
         //zEst.H(0,0) = (-1/C_NED_to_body_frame(2,2));
@@ -176,8 +177,6 @@ namespace reef_estimator
          * */
         zEst.u(0) = accelxyz_in_NED_frame(2) + initialAccMagnitude; //We need to take avg from csv file to get a better g.
         //        zEst.u(0) = accelxyz_in_NED_frame(2) + initialAccMagnitude + zEst.xHat(2); //We need to take avg from csv file to get a better g.
-
-
 
         //Finally propagate.
         xyEst.nonlinearPropagation(C_NED_to_body_frame, initialAccMagnitude, accelxyz_in_body_frame, zEst.xHat(2));
@@ -274,8 +273,8 @@ namespace reef_estimator
             if (chi2AcceptMocapXY(twist_msg))
             {
                 //z is the measurement.
-                xyEst.R(0, 0) = twist_msg.twist.covariance[0];
-                xyEst.R(1, 1) = twist_msg.twist.covariance[7];
+                xyEst.R(0, 0) = xyEst.R0(0,0);
+                xyEst.R(1, 1) = xyEst.R0(1,1);
                 xyEst.z(0) = twist_msg.twist.twist.linear.x;
                 xyEst.z(1) = twist_msg.twist.twist.linear.y;
                 newRgbdMeasurement = true;
@@ -576,10 +575,10 @@ namespace reef_estimator
             xyzDebugState.xy_plus.sigma_minus[0] = xyzDebugState.xy_plus.x_dot - xySigma(0);
             xyzDebugState.xy_plus.sigma_plus[1] = xyzDebugState.xy_plus.y_dot + xySigma(1);
             xyzDebugState.xy_plus.sigma_minus[1] = xyzDebugState.xy_plus.y_dot - xySigma(1);
-            xyzDebugState.xy_plus.sigma_plus[2] = xyzDebugState.xy_plus.pitch_bias + xySigma(2);
-            xyzDebugState.xy_plus.sigma_minus[2] = xyzDebugState.xy_plus.pitch_bias - xySigma(2);
-            xyzDebugState.xy_plus.sigma_plus[3] = xyzDebugState.xy_plus.roll_bias + xySigma(3);
-            xyzDebugState.xy_plus.sigma_minus[3] = xyzDebugState.xy_plus.roll_bias - xySigma(3);
+            xyzDebugState.xy_plus.sigma_plus[2] = xyzDebugState.xy_plus.roll_bias + xySigma(2);
+            xyzDebugState.xy_plus.sigma_minus[2] = xyzDebugState.xy_plus.roll_bias - xySigma(2);
+            xyzDebugState.xy_plus.sigma_plus[3] = xyzDebugState.xy_plus.pitch_bias + xySigma(3);
+            xyzDebugState.xy_plus.sigma_minus[3] = xyzDebugState.xy_plus.pitch_bias - xySigma(3);
             xyzDebugState.xy_plus.sigma_plus[4] = xyzDebugState.xy_plus.xa_bias + xySigma(4);
             xyzDebugState.xy_plus.sigma_minus[4] = xyzDebugState.xy_plus.xa_bias - xySigma(4);
             xyzDebugState.xy_plus.sigma_plus[5] = xyzDebugState.xy_plus.ya_bias + xySigma(5);

@@ -2,8 +2,8 @@
 #State: xdot,  ydot,  roll_bias,  pitch_bias,  accX_bias,  accY_bias.
 
 xy_P0: [
-  0.01, 0,     0,    0,    0,    0,
-  0,     0.01, 0,    0,    0,    0,
+  0.1, 0,     0,    0,    0,    0,
+  0,     0.1, 0,    0,    0,    0,
   0,     0,     0.0031, 0,    0,    0,
   0,     0,     0,    0.0031, 0,    0,
   0,     0,     0,    0,    0.141, 0,
@@ -11,8 +11,8 @@ xy_P0: [
 ],
 
 xy_Q: [
-  0.,    0,    0,    0,    0,    0,
-  0,    0.,    0,    0,    0,    0,
+  0.5,    0,    0,    0,    0,    0,
+  0,    0.5,    0,    0,    0,    0,
   0,    0,    0.03, 0,    0,    0,
   0,    0,    0,    0.03, 0,    0,
   0,    0,    0,    0,    0.1, 0,
@@ -30,8 +30,8 @@ xy_Q: [
 #When using RGBD R is set dynamically.
 #When using MOCAP this is the value that R takes.
 xy_R0: [
-  0.02, 0,
-  0,    0.02
+  0.01, 0,
+  0,    0.01
 ],
 #Partial Update
 #xdot,  ydot,  roll_bias,  pitch_bias,  accX_bias,  accY_bias.
