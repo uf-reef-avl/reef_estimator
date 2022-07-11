@@ -25,8 +25,8 @@
 
     <group if="$(arg use_rgbd)">
 
-        <node name="odom_to_velocity" pkg="odom_to_velocity" type="odom_to_velocity_node" output="screen">
-            <rosparam command="load" file="$(find odom_to_velocity)/params/basic.yaml" />
+        <node name="position_to_velocity" pkg="position_to_velocity" type="position_to_velocity_node" output="screen">
+            <rosparam command="load" file="$(find position_to_velocity)/params/basic.yaml" />
         </node>
 
         <group if="$(arg run_uncc)">

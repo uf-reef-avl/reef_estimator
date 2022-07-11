@@ -24,7 +24,7 @@
 #include <std_msgs/Bool.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/Range.h>
-#include <rosflight_msgs/RCRaw.h>
+#include <mavros_msgs/OverrideRCIn.h>
 
 #include <reef_msgs/DeltaToVel.h>
 
@@ -59,7 +59,7 @@ namespace reef_estimator {
         void isFlyingCallback(const std_msgs::BoolConstPtr &msg);
         void imuCallback(const sensor_msgs::ImuConstPtr &msg);
         void altimeterCallback(const sensor_msgs::RangeConstPtr &msg);
-        void rcRawCallback(const rosflight_msgs::RCRawConstPtr &msg);
+        void rcRawCallback(const mavros_msgs::OverrideRCInConstPtr &msg);
         void mocapPoseCallback(const geometry_msgs::PoseStampedConstPtr &msg);
         void mocapTwistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr &msg);
         void rgbdTwistCallback(const reef_msgs::DeltaToVelConstPtr &msg);
@@ -75,9 +75,6 @@ namespace reef_estimator {
     public:
         SensorManager();
         ~SensorManager();
-
-
-
         };
 }
 #endif

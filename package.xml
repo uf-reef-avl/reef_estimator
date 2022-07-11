@@ -15,13 +15,13 @@
   <depend>roscpp</depend>
   <depend>rospy</depend>
   <depend>geometry_msgs</depend>
-  <depend>rosflight</depend>
-  <depend>rosflight_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
   <depend>tf2_eigen</depend>
   <depend>tf_conversions</depend>
   <depend>reef_msgs</depend>
+  <depend>mavros</depend>
+  <depend>mavros_msgs</depend>
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->

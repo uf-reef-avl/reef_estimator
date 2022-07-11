@@ -7,6 +7,7 @@
 #include <ros/ros.h>
 #include <std_msgs/Bool.h>
 #include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
 #include <tf2_eigen/tf2_eigen.h>
 
 //Messages
@@ -16,6 +17,7 @@
 #include <reef_msgs/XYZDebugEstimate.h>
 #include <reef_msgs/XYZEstimate.h>
 #include <reef_msgs/DeltaToVel.h>
+#include <mavros_msgs/ExtendedState.h>
 
 #include "z_estimator.h"
 #include "xy_estimator.h"
@@ -40,6 +42,9 @@ namespace reef_estimator
         ros::Publisher state_publisher_;
         ros::Publisher debug_state_publisher_;
         ros::Publisher is_flying_publisher_;
+        ros::Publisher transformed_imu_pub_;
+        ros::Subscriber is_flying_subscriber_;
+
 
         //Estimator enable/disable variables
         bool enableXY;
@@ -74,10 +79,8 @@ namespace reef_estimator
 
       //Takeoff detection variables
         std_msgs::Bool takeoffState;
-        bool accTakeoffState, sonarTakeoffState;
         int numAccSamples, numSonarSamples;
         double accSamples[ACC_SAMPLE_SIZE], sonarSamples[SONAR_SAMPLE_SIZE];
-        double accMean, accVariance, sonarMean, sonarVariance;
         bool newRgbdMeasurement, newSonarMeasurement;
         int rgbdCounter;
 
@@ -95,7 +98,7 @@ namespace reef_estimator
         Eigen::MatrixXd xySigma;
         Eigen::Vector3d zSigma;
         
-        void checkTakeoffState(double accMagnitude);
+        void checkTakeoffState(const mavros_msgs::ExtendedStateConstPtr &msg);
         void publishEstimates();
         void saveMinusState();
 
@@ -108,6 +111,9 @@ namespace reef_estimator
         
         bool hypothesisAccept(float range_measurement);
         float correctRange(float range_measurement);
+        void transformImuToNed(sensor_msgs::Imu &imu);
+
+        void fluToFrd(sensor_msgs::Imu &imu);
 
     public:
         XYZEstimator();

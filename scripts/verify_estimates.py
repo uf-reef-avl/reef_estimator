@@ -18,7 +18,7 @@ class verifyEstimates():
         self.error_pub = rospy.Publisher('estimate_error', SyncEstimateError, queue_size=10)
 
         estimate_subs = Subscriber("xyz_debug_estimates", XYZDebugEstimate)
-        truth_subs = Subscriber("mocap/velocity/body_level_frame", TwistWithCovarianceStamped)
+        truth_subs = Subscriber("velocity/body_level_frame", TwistWithCovarianceStamped)
         rgbd_subs = Subscriber("rgbd_velocity/body_level_frame", DeltaToVel)
         mocap_pose_subs = Subscriber("pose_stamped", PoseStamped)
 
@@ -28,10 +28,10 @@ class verifyEstimates():
         self.multiplier = 1
         self.sonar_offset = 0
         use_sonar = False
-        self.multiplier = rospy.get_param("SD_Multiplied")
-        self.sonar_offset = rospy.get_param("Z_offset")
-        use_sonar = rospy.get_param("use_sonar")
-        print(use_sonar)
+        #self.multiplier = rospy.get_param("SD_Multiplied")
+        #self.sonar_offset = rospy.get_param("Z_offset")
+        #use_sonar = rospy.get_param("use_sonar")
+        #print(use_sonar)
 
         if use_sonar:
             sonar_subs = Subscriber("sonar_ned", Range)
