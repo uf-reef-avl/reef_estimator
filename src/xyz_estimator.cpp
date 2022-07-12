@@ -137,65 +137,14 @@ namespace reef_estimator
             accInitialized = true;
         }
     }
-      void XYZEstimator::transformImuToNed(sensor_msgs::Imu &imu) {
-
-        Eigen::Vector3d accel;
-        Eigen::Vector3d gyro;
-        Eigen::Quaterniond  q_imu;
-        Eigen::Matrix3d C_inertial_NWU_to_body_in_NWU;
-        Eigen::Matrix3d C_inertial_NWU_to_inertial_NED;
-        Eigen::Matrix3d C_inertial_NED_to_body_frame_in_NED;
-
-        accel << imu.linear_acceleration.x,imu.linear_acceleration.y,imu.linear_acceleration.z;
-        gyro << imu.angular_velocity.x,imu.angular_velocity.y,imu.angular_velocity.z;
-
-
-        C_inertial_NWU_to_body_in_NWU = reef_msgs::quaternion_to_rotation(imu.orientation);
-        C_inertial_NWU_to_inertial_NED<< 1, 0 ,0 ,
-                       0, -1, 0,
-                       0,  0, -1;
-        //Transformation from NWU to NED.
-        C_inertial_NED_to_body_frame_in_NED = C_inertial_NWU_to_inertial_NED*C_inertial_NWU_to_body_in_NWU*C_inertial_NWU_to_inertial_NED.transpose();
-        //Transformed acceleration. Compute in place.
-        accel = C_inertial_NWU_to_inertial_NED*accel;
-        //Transformed gyroscope. Compute in place.
-        gyro = C_inertial_NWU_to_inertial_NED*gyro;
-        //Transformed orientation in quaternion form.
-        //This is the orientation of the IMU in the inertial frame. This is how it originally should come.
-        q_imu = reef_msgs::DCM2quat(C_inertial_NED_to_body_frame_in_NED);
-
-        sensor_msgs::Imu new_imu;
-        //Save quaternion. NO change; orientation is already in NED frame.
-        new_imu.orientation = imu.orientation;
-
-        //Save accel
-        new_imu.linear_acceleration.x = accel.x();
-        new_imu.linear_acceleration.y = accel.y();
-        new_imu.linear_acceleration.z = accel.z();
-
-        //Save gyro. NO change; angular velocity is already in NED frame.
-        new_imu.angular_velocity = imu.angular_velocity;
-
-        //time stamp
-        new_imu.header = imu.header;
-
-//        ROS_WARN_STREAM(new_imu);
-        imu.linear_acceleration.x = new_imu.linear_acceleration.x;
-        imu.linear_acceleration.y = new_imu.linear_acceleration.y;
-        imu.linear_acceleration.z = new_imu.linear_acceleration.z;
-        imu.orientation.x = q_imu.x();
-        imu.orientation.y = q_imu.y();
-        imu.orientation.z = q_imu.z();
-        imu.orientation.w = q_imu.w();
-    }
 
     void XYZEstimator::fluToFrd(sensor_msgs::Imu &imu)
     {
         imu.linear_acceleration.y = -imu.linear_acceleration.y;
         imu.linear_acceleration.z = -imu.linear_acceleration.z;
         
-        //imu.orientation.y = -imu.orientation.y;
-        //imu.orientation.z = -imu.orientation.z;
+        imu.orientation.y = -imu.orientation.y;
+        imu.orientation.z = -imu.orientation.z;
     }
 /** Sensor update for the IMU. */
     void XYZEstimator::sensorUpdate(sensor_msgs::Imu imu) 
@@ -205,8 +154,7 @@ namespace reef_estimator
         xyzDebugState.header.stamp = imu.header.stamp;
 
         // IMU from MAVROS arrives in the FLU Frame
-        //fluToFrd(imu);
-        transformImuToNed(imu);
+        fluToFrd(imu);
         transformed_imu_pub_.publish(imu);
         if (isnan(getVectorMagnitude(imu.linear_acceleration.x, imu.linear_acceleration.y,imu.linear_acceleration.z))){
             ROS_ERROR_STREAM("IMU is giving NaNs");

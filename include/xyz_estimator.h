@@ -111,8 +111,6 @@ namespace reef_estimator
         
         bool hypothesisAccept(float range_measurement);
         float correctRange(float range_measurement);
-        void transformImuToNed(sensor_msgs::Imu &imu);
-
         void fluToFrd(sensor_msgs::Imu &imu);
 
     public:
