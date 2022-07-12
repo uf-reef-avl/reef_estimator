@@ -52,9 +52,9 @@ namespace reef_estimator
         xyzEst.sensorUpdate(*msg);
     }
 
-    void SensorManager::rcRawCallback(const rosflight_msgs::RCRawConstPtr &msg) {
+    void SensorManager::rcRawCallback(const mavros_msgs::OverrideRCInConstPtr &msg) {
         //Check for toggled mocap RC switch
-        if (!mocapSwitchOn && msg->values[mocapOverrideChannel] > 1500)
+        if (!mocapSwitchOn && msg->channels[mocapOverrideChannel] > 1500)
         {
             if (xyzEst.enableMocapXY)
             {
@@ -70,7 +70,7 @@ namespace reef_estimator
 
             mocapSwitchOn = true;
         }
-        else if (mocapSwitchOn && msg->values[mocapOverrideChannel] <= 1500)
+        else if (mocapSwitchOn && msg->channels[mocapOverrideChannel] <= 1500)
         {
             if (xyzEst.enableRGBD)
             {
@@ -116,7 +116,7 @@ void SensorManager::altimeterCallback(const sensor_msgs::RangeConstPtr &msg)
         //Publish the negative range measurement
         range_msg_ned = *msg;
         range_msg_ned.header.stamp = range_msg_ned.header.stamp;
-        range_msg_ned.range = -range_msg_ned.range;
+        range_msg_ned.range = range_msg_ned.range;
         range_ned_publisher_.publish(range_msg_ned);
     }
 }
