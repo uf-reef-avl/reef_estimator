@@ -15,7 +15,11 @@ namespace reef_estimator
     numSonarSamples(0),
     newSonarMeasurement(false),
     newRgbdMeasurement(false),
-    rgbdCounter(0)
+    rgbdCounter(0),
+    sonarTakeoffState(false),
+    accTakeoffState(false),
+    accMean(0),
+    accVariance(0)
     {
         private_nh_.param<bool>("debug_mode", debug_mode_, false);
         if (debug_mode_) {
@@ -82,7 +86,8 @@ namespace reef_estimator
         zEst.updateLinearModel();
         zEst.initialize();
         zEst.setTakeoffState(false);
-        is_flying_subscriber_ = nh_.subscribe("status", 10, &XYZEstimator::checkTakeoffState, this);
+        xyEst.XYTakeoff = false;
+        // is_flying_subscriber_ = nh_.subscribe("status", 10, &XYZEstimator::checkTakeoffState, this);
 
         state_publisher_ = nh_.advertise<reef_msgs::XYZEstimate>("xyz_estimate", 1, true);
         transformed_imu_pub_ = nh_.advertise<sensor_msgs::Imu>("transformed_imu", 1, true);
@@ -163,6 +168,7 @@ namespace reef_estimator
 
         //Make sure accelerometer is initialized
         if (!accInitialized) {
+            // ROS_INFO_STREAM(imu.linear_acceleration);
             initializeAcc(imu.linear_acceleration);
             last_time_stamp = imu.header.stamp.toSec();
             return;
@@ -241,7 +247,7 @@ namespace reef_estimator
 
         publishEstimates();
 
-       // checkTakeoffState(accelxyz_in_body_frame.norm());
+       checkTakeoffState(accelxyz_in_body_frame.norm());
     }
 
     void XYZEstimator::rgbdUpdate(reef_msgs::DeltaToVel twist_msg)
@@ -301,6 +307,7 @@ namespace reef_estimator
 //            if (chi2AcceptMocapZ(pose_msg.pose.position.z))
             {
                 zEst.z(0) = pose_msg.pose.position.z;
+                // ROS_INFO_STREAM(pose_msg.pose.position);
                 newSonarMeasurement = true;
             }
         }
@@ -447,23 +454,78 @@ namespace reef_estimator
         }
     }
 
-    void XYZEstimator::checkTakeoffState(const mavros_msgs::ExtendedStateConstPtr &msg) 
+    void XYZEstimator::checkTakeoffState(double accMagnitude) 
     {
-        if (takeoffState.data && msg->landed_state != 2)
+        sonarTakeoffState = zEst.z(0) <= -0.18;
+        ROS_WARN_STREAM("zEst:");
+        ROS_INFO_STREAM(zEst.z(0));
+
+        //Check variance of accelerometer vector magnitude
+        if ((!accTakeoffState) || (!sonarTakeoffState && accTakeoffState))
         {
-            ROS_INFO("Landed!");
+            if (numAccSamples < ACC_SAMPLE_SIZE) 
+            {
+                accSamples[numAccSamples++] = accMagnitude;
+            } 
+            else 
+            {
+                //shift sample in and compute the sample mean simultaneously
+                accMean = 0;
+                for (int i = 0; i < ACC_SAMPLE_SIZE - 1; i++) 
+                {
+                    accSamples[i] = accSamples[i + 1];
+                    accMean += accSamples[i];
+                }
+                accSamples[ACC_SAMPLE_SIZE - 1] = accMagnitude;
+                accMean += accMagnitude;
+                accMean /= (double) ACC_SAMPLE_SIZE;
+
+                //Finally, compute the sample variance
+                accVariance = 0;
+                for (int i = 0; i < ACC_SAMPLE_SIZE; i++) 
+                {
+                    double distFromMean = accSamples[i] - accMean;
+                    accVariance += (distFromMean * distFromMean);
+                }
+                accVariance /= (double) (ACC_SAMPLE_SIZE - 1);
+                accTakeoffState = accVariance >= ACC_TAKEOFF_VARIANCE;
+            }
+        } 
+        else if (numAccSamples > 0) 
+        {
+            numAccSamples = 0;
+        }
+        ROS_WARN_STREAM("accTakeoffState");
+        ROS_INFO_STREAM(accTakeoffState);
+        ROS_WARN_STREAM("sonarTakeoffState");
+        ROS_INFO_STREAM(sonarTakeoffState);
+        if (takeoffState.data)
+        {
+            ROS_WARN_STREAM("takeoff state");
+            ROS_INFO_STREAM(1);
+        }
+        else{
+            ROS_WARN_STREAM("takeoff state");
+            ROS_INFO_STREAM(0);
+        }
+
+        // ROS_INFO_STREAM("takeoff: " << std::endl << takeoffState.data << std::endl)
+        //Publish changes in takeoff state
+        if (accTakeoffState && sonarTakeoffState && !takeoffState.data) 
+        {
+            ROS_INFO("Takeoff!");
+            zEst.setTakeoffState(true);
+            xyEst.XYTakeoff = true;
+            takeoffState.data = true;
+            is_flying_publisher_.publish(takeoffState);
+        } 
+        else if (!accTakeoffState && !sonarTakeoffState && takeoffState.data) 
+        {
+            ROS_INFO("Landing!");
             zEst.setTakeoffState(false);
             takeoffState.data = false;
             is_flying_publisher_.publish(takeoffState);
         }
-        else if (!takeoffState.data && msg->landed_state == 2)
-        {
-            ROS_INFO("Takeoff!");
-            zEst.setTakeoffState(true);
-            takeoffState.data = true;
-            is_flying_publisher_.publish(takeoffState);
-        }
-        //Publish changes in takeoff state
     }
 
     void XYZEstimator::saveMinusState()

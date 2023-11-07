@@ -5,13 +5,14 @@
       <rosparam file="$(find reef_estimator)/params/z_est_params.yaml" />
       <rosparam file="$(find reef_estimator)/params/basic_params.yaml" />
       <rosparam>
-          enable_rgbd: true
-          enable_sonar: true
-          enable_mocap_xy: false
-          enable_mocap_z: false
+          enable_rgbd: false
+          enable_sonar: false
+          enable_mocap_xy: true
+          enable_mocap_z: true
       </rosparam>
-      <remap from="mocap_ned" to="pose_stamped"/>
+      <remap from="imu/data" to="mavros/imu/data"/>
+      <remap from="mocap_ned" to="/et/ned/pose_stamped"/>
       <remap from="mocap_velocity/body_level_frame" to="velocity/body_level_frame"/>
-      <remap from="rgbd_velocity_body_frame" to="rgbd_velocity/body_level_frame"/>
+      <!-- <remap from="rgbd_velocity_body_frame" to="rgbd_velocity/body_level_frame"/> -->
   </node>
 </launch>

@@ -7,7 +7,7 @@ namespace reef_estimator
     ZEstimator::ZEstimator() : Estimator()
     {
         // Move P R and x_0 beta vector from yaml
-        dt = 0.005;
+        dt = 0.02;
 
         //Initial state
         F = Eigen::MatrixXd(3, 3);

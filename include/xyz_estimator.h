@@ -27,7 +27,7 @@
 #include <iostream>
 
 #define ACC_SAMPLE_SIZE 20
-#define ACC_TAKEOFF_VARIANCE 0.5
+#define ACC_TAKEOFF_VARIANCE 0.25
 #define SONAR_SAMPLE_SIZE 40
 #define SONAR_TAKEOFF_VARIANCE 0.000002
 #define SONAR_OFFSET 0.010
@@ -53,6 +53,7 @@ namespace reef_estimator
         //Instantiate a ZEstimator
         ZEstimator zEst;
 
+
         //Instantiate an XYEstimator
         XYEstimator xyEst;
 
@@ -75,6 +76,8 @@ namespace reef_estimator
         double dt;
         bool enable_partial_update;
         int sigma_mulitplier;
+        bool accTakeoffState, sonarTakeoffState;
+        double accMean, accVariance, sonarMean, sonarVariance;
 
 
       //Takeoff detection variables
@@ -98,7 +101,7 @@ namespace reef_estimator
         Eigen::MatrixXd xySigma;
         Eigen::Vector3d zSigma;
         
-        void checkTakeoffState(const mavros_msgs::ExtendedStateConstPtr &msg);
+        void checkTakeoffState(double accMagnitude);
         void publishEstimates();
         void saveMinusState();
 

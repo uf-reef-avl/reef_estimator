@@ -37,6 +37,7 @@ namespace reef_estimator
         double xc;
         double yc;
         double zc;
+        bool XYTakeoff;
     };
 }
 
