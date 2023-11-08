@@ -18,12 +18,13 @@ find_package(catkin REQUIRED COMPONENTS
     tf_conversions
     reef_msgs
     mavros_msgs
+    trisonica_ros
 )
 
 catkin_package(
     INCLUDE_DIRS
     LIBRARIES
-    CATKIN_DEPENDS roscpp rospy sensor_msgs geometry_msgs mavros mavros_msgs sensor_msgs std_msgs tf2_eigen
+    CATKIN_DEPENDS roscpp rospy sensor_msgs geometry_msgs mavros mavros_msgs sensor_msgs std_msgs tf2_eigen trisonica_ros
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

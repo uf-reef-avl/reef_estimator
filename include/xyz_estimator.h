@@ -18,6 +18,7 @@
 #include <reef_msgs/XYZEstimate.h>
 #include <reef_msgs/DeltaToVel.h>
 #include <mavros_msgs/ExtendedState.h>
+#include <trisonica_ros/trisonica_msg.h>
 
 #include "z_estimator.h"
 #include "xy_estimator.h"
@@ -130,6 +131,7 @@ namespace reef_estimator
         void mocapUpdate(geometry_msgs::PoseStamped pose_msg);
         void mocapUpdate(geometry_msgs::TwistWithCovarianceStamped twist_msg);
         void rgbdUpdate(reef_msgs::DeltaToVel twist_msg);
+        void windUpdate(trisonica_ros::trisonica_msg wind_msg);
 
         };
 

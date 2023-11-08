@@ -107,6 +107,15 @@ namespace reef_estimator
           ROS_WARN_STREAM("You stopped the measurements! Why?? ");
     }
 
+    void SensorManager::windsensorCallback(const trisonica_ros::trisonica_msgConstPtr &msg)
+    {
+      private_nh_.param<bool>("enable_measurements", get_measurements, true);
+        if(get_measurements)
+          xyzEst.windUpdate(*msg);
+        else
+          ROS_WARN_STREAM("You stopped the measurements! Why?? ");
+    }
+
 void SensorManager::altimeterCallback(const sensor_msgs::RangeConstPtr &msg)
 {
     xyzEst.sensorUpdate(*msg);

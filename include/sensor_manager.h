@@ -27,7 +27,7 @@
 #include <mavros_msgs/OverrideRCIn.h>
 
 #include <reef_msgs/DeltaToVel.h>
-
+#include <trisonica_ros/trisonica_msg.h>
 #include "xyz_estimator.h"
 #include "z_estimator.h"
 
@@ -63,6 +63,7 @@ namespace reef_estimator {
         void mocapPoseCallback(const geometry_msgs::PoseStampedConstPtr &msg);
         void mocapTwistCallback(const geometry_msgs::TwistWithCovarianceStampedConstPtr &msg);
         void rgbdTwistCallback(const reef_msgs::DeltaToVelConstPtr &msg);
+        void windsensorCallback(const trisonica_ros::trisonica_msgConstPtr &msg);
 
         bool initialized_;
         bool imuCalibrated;

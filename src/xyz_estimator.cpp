@@ -265,6 +265,22 @@ namespace reef_estimator
         }
     }
 
+    void XYZEstimator::windUpdate(trisonica_ros::trisonica_msg wind_msg)
+    {
+        if (!useMocapXY)
+        {
+//            if (chi2AcceptRgbd(twist_msg.vel))
+            {
+                xyEst.R(0, 0) = .1; // update later
+                xyEst.R(1, 1) = .1; // update later
+                // transform data here
+                xyEst.z(0) = wind_msg.northsouth;
+                xyEst.z(1) = wind_msg.westeast;
+                ROS_INFO_STREAM(xyEst.z(1));
+                newRgbdMeasurement = true;
+            }
+        }
+    }
     //Sonar update
     void XYZEstimator::sensorUpdate(sensor_msgs::Range range_msg) 
     {

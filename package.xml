@@ -22,6 +22,7 @@
   <depend>reef_msgs</depend>
   <depend>mavros</depend>
   <depend>mavros_msgs</depend>
+  <depend>trisonica_ros</depend>
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
