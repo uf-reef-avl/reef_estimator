@@ -273,9 +273,31 @@ namespace reef_estimator
             {
                 xyEst.R(0, 0) = .1; // update later
                 xyEst.R(1, 1) = .1; // update later
-                // transform data here
-                xyEst.z(0) = wind_msg.northsouth;
-                xyEst.z(1) = wind_msg.westeast;
+                // rotation matrix from enu to ned
+                float theta = 90 * M_PI / 180;
+                float phi = 180 * M_PI / 180;
+
+                Eigen::Matrix3d Cz90, Cx180, C_from_ENU_to_NED;
+                Cz90 << cos(theta), sin(theta), 0,
+                        -sin(theta), cos(theta), 0,
+                        0, 0, 1;
+                Cx180 << 1, 0, 0,
+                        0, cos(phi), sin(phi),
+                        0, -sin(phi), cos(phi);
+                C_from_ENU_to_NED = Cz90 * Cx180;
+                // rotate wind vector with C_from_ENU_to_NED rotation matrix
+                Eigen::Vector3d wind_vector;
+                wind_vector << wind_msg.northsouth, wind_msg.westeast, 0;
+                Eigen::Vector3d wind_vector_ned;
+                wind_vector_ned = C_from_ENU_to_NED * wind_vector;
+                // adding calibration
+                // x calibration x_cal=A*x+B A=0.2436276, B=0.02786689
+                // y calibration y_cal=A*y+B A =0.21677266 B=-0.11102584
+                wind_vector_ned(0) = 0.2436276 * wind_vector_ned(0) + 0.02786689;
+                wind_vector_ned(1) = 0.21677266 * wind_vector_ned(1) - 0.11102584;
+                // assign wind vector to xyEst.z
+                xyEst.z(0) = wind_vector_ned(0);
+                xyEst.z(1) = wind_vector_ned(1);                
                 ROS_INFO_STREAM(xyEst.z(1));
                 newRgbdMeasurement = true;
             }
